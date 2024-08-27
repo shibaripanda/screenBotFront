@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { createTheme, MantineProvider } from '@mantine/core'
+
+// import { MainPage } from './pages/MainPage';
+// import AuthPage from './pages/AuthPage';
+
+import '@mantine/core/styles.css';
+
+import '@mantine/core/styles.layer.css';
+import './layout.css';
+import { ConnectPage } from './pages/ConnectPage';
+
+const theme = createTheme({
+  /** Put your mantine theme override here */
+});
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <MantineProvider theme={theme}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<ConnectPage/>} />
+              {/* <Route path="/main" element={<MainPage/>} />
+              <Route path="/" element={<AuthPage/>} /> */}
+            </Routes>
+          </BrowserRouter>
+      </MantineProvider>
   );
 }
 
