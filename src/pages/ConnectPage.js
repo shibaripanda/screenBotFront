@@ -1,7 +1,7 @@
 import '@mantine/core/styles.css'
 import { useEffect } from 'react'
 import '../styles/App.css'
-import '../modules/telegramAuth.js'
+import { TelegramVidget } from '../modules/TelegramVidget'
 
 export function ConnectPage() {
 
@@ -16,7 +16,7 @@ export function ConnectPage() {
 
     return (
       <div>
-
+        <TelegramVidget/>
         <button>Connect</button>
         
       </div>

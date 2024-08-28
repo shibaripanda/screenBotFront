@@ -1,1 +1,0 @@
-<script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="Testxf_Bot" data-size="large" data-auth-url="google.com" data-request-access="write"></script>
