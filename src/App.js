@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { createTheme, MantineProvider } from '@mantine/core'
 
-// import { MainPage } from './pages/MainPage';
+import { MainPage } from './pages/MainPage'
 // import AuthPage from './pages/AuthPage';
 
 import '@mantine/core/styles.css';
@@ -21,8 +21,8 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<ConnectPage/>} />
-              {/* <Route path="/main" element={<MainPage/>} />
-              <Route path="/" element={<AuthPage/>} /> */}
+              <Route path="/main" element={<MainPage/>} />
+              {/* <Route path="/" element={<AuthPage/>} /> */}
             </Routes>
           </BrowserRouter>
       </MantineProvider>

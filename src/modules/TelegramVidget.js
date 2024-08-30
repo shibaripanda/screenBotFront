@@ -1,8 +1,10 @@
-import { LoginButton } from '@telegram-auth/react';
-import axios from "axios";
-import { axiosCall } from './axiosCall';
+import { LoginButton } from '@telegram-auth/react'
+import axios from "axios"
+import { axiosCall } from './axiosCall'
+import { useNavigate } from 'react-router-dom'
 
 export function TelegramVidget(props) {
+    const navigate = useNavigate()
     return (
         <div>
             <LoginButton
@@ -21,6 +23,8 @@ export function TelegramVidget(props) {
                         props.setStatus('Authorized')
                         const res2 = await axiosCall('GET', `http://localhost:5002/user`, {})
                         console.log(res2.data)
+                        navigate('/main')
+
                     })
                     .catch((er) => {
                         console.log(er)
