@@ -8,7 +8,6 @@ export const useConnectSocket = () => {
     }
     
     useEffect(() => {
-        console.log('c')
         connectSocket()
     }, [])
 }

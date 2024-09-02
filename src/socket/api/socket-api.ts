@@ -1,14 +1,15 @@
-import io, { Socket } from 'socket.io-client';
+import io, { Socket } from 'socket.io-client'
+import { fix } from '../../fix/fix'
+
+
 
 export class SocketApt {
     static socket: null | Socket = null
 
     static createConnections(): void {
 
-        this.socket = io('ws://localhost:5002', {auth: {token: {'Authorization': 'Bearer ' + sessionStorage.getItem('token')}}})
-
-        // this.socket = io({auth: {token: "abc"}})
-
+        this.socket = io(fix.serverAuthLink, {auth: {token: {'Authorization': 'Bearer ' + sessionStorage.getItem('token')}}})
+        
         this.socket.on('connect', () => {
             console.log('connect')
         })
@@ -17,9 +18,14 @@ export class SocketApt {
             console.log('disconnect')
         })
 
-        // this.socket.on('res', (data) => {
-        //     console.log(data)
-        // })
+        this.socket.on('res', (data) => {
+            console.log(data)
+        })
+
+        this.socket.on('exception', (data) => {
+            console.log(data)
+            window.location.assign(fix.appLink!)
+        })
 
     }
 }
