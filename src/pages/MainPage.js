@@ -5,6 +5,7 @@ import '../styles/App.css'
 import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
 import { SocketApt } from '../socket/api/socket-api.ts'
 import { fix } from '../fix/fix.js'
+import { CreateNewBotForm } from '../components/createNewBotForm/CreateNewBotForm.tsx'
 
 export function MainPage() {
 
@@ -29,9 +30,8 @@ export function MainPage() {
   
   if(status){
     return (
-      <div>
-        <div>Hello</div>
-        <div><button onClick={send}>Connect</button></div>
+      <div style={{width: '35vmax', marginTop: '3vmax'}}>
+        <CreateNewBotForm/>
       </div>
     )
   }
