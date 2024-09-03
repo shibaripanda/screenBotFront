@@ -9,15 +9,22 @@ import { CreateNewBotForm } from '../components/createNewBotForm/CreateNewBotFor
 
 export function MainPage() {
 
-  const [status, setStatus] = useState(false)
-
   useConnectSocket()
+
+  const [status, setStatus] = useState(false)
+  const [bots, setBots] = useState([])
+
+  SocketApt.socket?.on('getMyBots', (data) => {
+    console.log(data)
+    setBots(data)
+  })
 
   useEffect(() => {
     if(!sessionStorage.getItem('token')){
       window.location.assign(fix.appLink)
     }
     else{
+      SocketApt.socket.emit('getMyBots')
       setStatus(true)
     }
   }, [])
@@ -30,7 +37,7 @@ export function MainPage() {
   
   if(status){
     return (
-      <div style={{width: '35vmax', marginTop: '3vmax'}}>
+      <div style={{width: '45vmax', marginTop: '3vmax'}}>
         <CreateNewBotForm/>
       </div>
     )

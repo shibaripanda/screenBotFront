@@ -4,6 +4,12 @@ import { SocketApt } from '../../socket/api/socket-api.ts';
 
 export function CreateNewBotForm() {
     const [value, setValue] = useState('')
+    const [resStatus, setResStatus] = useState('')
+
+    SocketApt.socket?.on('createNewBot', (data) => {
+        setResStatus(data)
+        console.log(data)
+    })
 
     const activButton = () => {
         if(value !== '') return false
@@ -13,11 +19,12 @@ export function CreateNewBotForm() {
     return (
         <Paper shadow="sm" p="xl">
             <TextInput
-            label="Bot token"
+            label={resStatus}
             description="Token from BotFather"
             placeholder="token"
             value={value}
             onChange={(event) => {
+                setResStatus('')
                 setValue(event.currentTarget.value)
             }}
             />
@@ -26,6 +33,7 @@ export function CreateNewBotForm() {
                 disabled={activButton()}
                 onClick={()=> {
                     SocketApt.socket?.emit('createNewBot', {token: value})
+                    setValue('')
                 }}
                 >
                 Создать

@@ -1,8 +1,6 @@
 import io, { Socket } from 'socket.io-client'
 import { fix } from '../../fix/fix'
 
-
-
 export class SocketApt {
     static socket: null | Socket = null
 
