@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
-import { Button, Paper, TextInput } from '@mantine/core';
-import { SocketApt } from '../../socket/api/socket-api.ts';
+import { Anchor, Button, Paper, TextInput } from '@mantine/core'
+import { SocketApt } from '../../socket/api/socket-api.ts'
 
-export function CreateNewBotForm() {
+export function CreateNewBotForm({createBot}) {
+
+    const link = <div>Create new bot <Anchor size='sm' href="https://t.me/BotFather" target="_blank">BotFather</Anchor></div>
+
     const [value, setValue] = useState('')
-    const [resStatus, setResStatus] = useState('')
+    const [resStatus, setResStatus] = useState(link)
 
     SocketApt.socket?.on('createNewBot', (data) => {
         setResStatus(data)
-        console.log(data)
     })
 
     const activButton = () => {
@@ -20,11 +22,11 @@ export function CreateNewBotForm() {
         <Paper shadow="sm" p="xl">
             <TextInput
             label={resStatus}
-            description="Token from BotFather"
+            description='Token from BotFather:'
             placeholder="token"
             value={value}
             onChange={(event) => {
-                setResStatus('')
+                setResStatus(link)
                 setValue(event.currentTarget.value)
             }}
             />
@@ -32,11 +34,11 @@ export function CreateNewBotForm() {
                 style={{marginTop: '1vmax'}}
                 disabled={activButton()}
                 onClick={()=> {
-                    SocketApt.socket?.emit('createNewBot', {token: value})
+                    createBot(value)
                     setValue('')
                 }}
                 >
-                Создать
+                Create
             </Button>
         </Paper>
     )

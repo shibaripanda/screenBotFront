@@ -1,27 +1,81 @@
-import { Button, Paper, Text, Group, CloseButton } from '@mantine/core';
-import React from 'react';
+import { Button, Paper, Text, Group, TextInput } from '@mantine/core';
+import React, { useState } from 'react'
 
-export function BotItem() {
+export function BotItem({bot, deleteBot, offBot, onBot}) {
+
+  const [deleteValue, setDeleteValue] = useState('')
+
+  const botStatus = (status) => {
+    if(status) return '✅'
+    return '❌' 
+  }
+  const deleteButton = () => {
+    if(deleteValue === bot.name) return false
+    return true
+  }
+  const onOffButton = () => {
+    if(bot.status){
+      return (
+        <Button variant="default" size="xs"
+        onClick={() => {
+          offBot(bot._id)
+        }}>
+          Off
+        </Button>
+      )
+    }
+    return (
+      <Button variant="default" size="xs"
+      onClick={() => {
+        onBot(bot._id)
+      }}>
+          On
+      </Button>
+    )
+  }
+
   return (
     <Paper withBorder p="lg" radius="md" shadow="md">
       <Group justify="space-between" mb="xs">
         <Text fz="md" fw={500}>
-          Allow cookies
+          {bot.name} (@{bot.username}) {botStatus(bot.status)}
         </Text>
-        <CloseButton mr={-9} mt={-9} />
       </Group>
       <Text c="dimmed" fz="xs">
-        So the deal is, we want to spy on you. We would like to know what did you have for todays
-        breakfast, where do you live, how much do you earn and like 50 other things. To view our
-        landing page you will have to accept all cookies. That&apos;s all, and remember that we are
-        watching...
+        id: {bot._id}
+      </Text>
+      <Text c="dimmed" fz="xs">
+        {new Date(bot.createdAt).toLocaleDateString()}
+      </Text>
+      <Text c="dimmed" fz="xs">
+        Status: {botStatus(bot.status)}
       </Text>
       <Group justify="flex-end" mt="md">
         <Button variant="default" size="xs">
-          Cookies preferences
+          Monitor
         </Button>
-        <Button variant="outline" size="xs">
-          Accept all
+        <Button variant="default" size="xs">
+          Edit
+        </Button>
+        {onOffButton()}
+        <TextInput
+            size="xs"
+            placeholder='Text bot`s name for delete'
+            value={deleteValue}
+            onChange={(event) => {
+              setDeleteValue(event.currentTarget.value)
+            }}
+            />
+        <Button
+         disabled={deleteButton()}
+         color='red'
+         size="xs"
+         onClick={() => {
+          deleteBot(bot._id)
+          setDeleteValue('')
+        }}
+         >
+          Delete
         </Button>
       </Group>
     </Paper>
