@@ -1,9 +1,13 @@
 import { Button, Paper, Text, Group, TextInput } from '@mantine/core';
 import React, { useState } from 'react'
+import { Link, Route, Routes, useNavigate } from 'react-router-dom';
+import { BotEditPage } from '../../pages/BotEditPage';
+import { fix } from '../../fix/fix';
 
 export function BotItem({bot, deleteBot, offBot, onBot}) {
 
   const [deleteValue, setDeleteValue] = useState('')
+  const navigate = useNavigate()
 
   const botStatus = (status) => {
     if(status) return '✅'
@@ -54,7 +58,10 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
         <Button variant="default" size="xs">
           Monitor
         </Button>
-        <Button variant="default" size="xs">
+        <Button variant="default" size="xs"
+        onClick={() => {
+          navigate(`/botedit/${bot._id}`)
+        }}>
           Edit
         </Button>
         {onOffButton()}

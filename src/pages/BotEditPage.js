@@ -5,24 +5,25 @@ import '../styles/App.css'
 import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
 import { SocketApt } from '../socket/api/socket-api.ts'
 import { fix } from '../fix/fix.js'
-import { CreateNewBotForm } from '../components/createNewBotForm/CreateNewBotForm.tsx'
-import { BotItem } from '../components/listOfBots/BotItem.tsx'
+import { useParams } from 'react-router-dom'
+import { FindScreenForm } from '../components/screenList/FindScreenForm.tsx'
+import { ScreenItem } from '../components/screenList/ScreenItem.tsx'
 
-export function MainPage() {
+export function BotEditPage() {
 
+  const {botId} = useParams()
   useConnectSocket()
+  
+  const [bot, setBot] = useState(false)
+  const [screens, getScreens] = useState(false)
 
-  const [status, setStatus] = useState(false)
-  const [bots, setBots] = useState(false)
-
-  // SocketApt.socket?.on('test', (data) => {
-  //   console.log(data)
-  // })
-
-  SocketApt.socket?.on('getMyBots', (data) => {
+  SocketApt.socket?.on('getBot', (data) => {
     console.log(data)
-    // setBots(data.sort((a ,b) => new Date(b.updatedAt) - new Date(a.updatedAt)))
-    setBots(data)
+    setBot(data)
+  })
+  SocketApt.socket?.on('getScreens', (data) => {
+    console.log(data)
+    getScreens(data)
   })
 
   useEffect(() => {
@@ -30,11 +31,11 @@ export function MainPage() {
       window.location.assign(fix.appLink)
     }
     else{
-      console.log('sssss')
-      SocketApt.socket.emit('getMyBots')
-      setStatus(true)
+      console.log(botId)
+      SocketApt.socket.emit('getBot', botId)
+      SocketApt.socket.emit('getScreens', botId)
     }
-  }, [])
+  }, [botId])
 
   const deleteBot = (_id) => {
     SocketApt.socket.emit('deleteBot', _id)
@@ -53,11 +54,11 @@ export function MainPage() {
   }
 
   
-  if(bots){
+  if(bot && screens){
     return (
       <div style={{width: '55vmax', marginTop: '3vmax'}}>
-        <CreateNewBotForm createBot={createBot}/>
-        {bots.map((item, index) => <div key={index} style={{marginTop: '1vmax'}}><BotItem bot={item} deleteBot={deleteBot} onBot={onBot} offBot={offBot}/></div>)}
+        <FindScreenForm bot={bot} screens={screens}/>
+        {screens.map((item, index) => <div key={index} style={{marginTop: '1vmax'}}><ScreenItem screen={item} /></div>)}
       </div>
     )
   }
