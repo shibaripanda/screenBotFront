@@ -4,7 +4,7 @@ import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import { BotEditPage } from '../../pages/BotEditPage';
 import { fix } from '../../fix/fix';
 
-export function ScreenItem({screen}) {
+export function ScreenItem({screen, deleteScreen, sendMeScreen}) {
 
   const [deleteValue, setDeleteValue] = useState('')
   const navigate = useNavigate()
@@ -76,8 +76,11 @@ export function ScreenItem({screen}) {
         Protect: {screen.protect}
       </Text>
       <Group justify="flex-end" mt="md">
-        <Button variant="default" size="xs">
-          Add content
+        <Button variant="default" size="xs"
+        onClick={() => {
+          sendMeScreen(screen._id)
+        }}>
+          Send me
         </Button>
         <TextInput
             size="xs"
@@ -92,8 +95,7 @@ export function ScreenItem({screen}) {
          color='red'
          size="xs"
          onClick={() => {
-          // deleteBot(bot._id)
-          // setDeleteValue('')
+          deleteScreen(screen._id)
         }}
          >
           Delete

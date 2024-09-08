@@ -1,40 +1,62 @@
-import React, { useState } from 'react'
-import { Button, Group, Paper, TextInput } from '@mantine/core'
+import React from 'react'
+import { Button, Group, Paper, Text, TextInput } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
+import { ModalCreateScreen } from './ModalCreateScreen.tsx'
 
-export function FindScreenForm({bot, screen}) {
+export function FindScreenForm({bot, screen, createScreen, newScreenName, setNewScreenName, filterScreens, setFilterScreens}) {
 
-
-    const [value, setValue] = useState('')
     const navigate = useNavigate()
+
+    const activButtonCreateScreen = () => {
+        if(newScreenName === '') return true
+        return false
+    }
 
     return (
         <Paper shadow="sm" p="xl">
-            <div style={{marginBottom: '2vmax'}}>
-                <Group>
-                    <Button variant="default" size="xs"
+
+            <Group>
+                <Button variant="default" size="xs"
+                    onClick={() => {
+                    navigate(`/main`)
+                    }}>
+                    Back to all bots
+                </Button>
+                <Text>{bot.name + ' (@' + bot.username + ')'}</Text>
+            </Group>
+
+            <hr style={{marginBottom: '1vmax', marginTop: '1vmax'}}></hr>
+
+            <div style={{marginBottom: '1vmax', marginTop: '2vmax'}}>
+                <TextInput
+                    description='Create new screen'
+                    placeholder="new screen name"
+                    value={newScreenName}
+                    onChange={(event) => {
+                        setNewScreenName(event.currentTarget.value)
+                    }}
+                />
+                <div style={{marginTop: '1vmax'}}>
+                    {/* <Button variant="default" size="xs"
+                    disabled={activButtonCreateScreen()}
                         onClick={() => {
-                        navigate(`/main`)
-                        }}>
-                        Back to all bots
-                    </Button>
-                    <Button variant="default" size="xs"
-                        onClick={() => {
-                        navigate(`/main`)
+                        createScreen(bot._id)
                         }}>
                         Create new screen
-                    </Button>
-                </Group>
+                    </Button> */}
+                    <ModalCreateScreen newScreenName={newScreenName} setNewScreenName={setNewScreenName} activButtonCreateScreen={activButtonCreateScreen} createScreen={createScreen} botId={bot._id}/>
+                </div>
             </div>
+
+            <hr style={{marginBottom: '2vmax', marginTop: '2vmax'}}></hr>
+
             <TextInput
-            label={bot.name + ' (@' + bot.username + ')'}
-            description='Find screen by name:'
-            placeholder="screen name"
-            value={value}
-            onChange={(event) => {
-                setResStatus(link)
-                setValue(event.currentTarget.value)
-            }}
+                description='Find screen by name:'
+                placeholder="screen name"
+                value={filterScreens}
+                onChange={(event) => {
+                    setFilterScreens(event.currentTarget.value)
+                }}
             />
         </Paper>
     )

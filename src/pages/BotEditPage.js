@@ -16,6 +16,8 @@ export function BotEditPage() {
   
   const [bot, setBot] = useState(false)
   const [screens, getScreens] = useState(false)
+  const [newScreenName, setNewScreenName] = useState('')
+  const [filterScreens, setFilterScreens] = useState('')
 
   SocketApt.socket?.on('getBot', (data) => {
     console.log(data)
@@ -32,21 +34,24 @@ export function BotEditPage() {
     }
     else{
       console.log(botId)
+      SocketApt.socket.emit('editModeBot', botId)
       SocketApt.socket.emit('getBot', botId)
       SocketApt.socket.emit('getScreens', botId)
     }
   }, [botId])
 
-  const deleteBot = (_id) => {
-    SocketApt.socket.emit('deleteBot', _id)
+  const deleteScreen = (_id) => {
+    SocketApt.socket.emit('deleteScreen', _id)
+    getScreens(screens.filter(item => item._id !== _id))
   }
 
-  const createBot = (token) => {
-    SocketApt.socket.emit('createNewBot', token)
+  const createScreen = (botId, newScreenName) => {
+    SocketApt.socket.emit('createNewScreen', {botId: botId, screenName: newScreenName})
+    // SocketApt.socket.emit('getScreens', botId)
   }
 
-  const offBot = (_id) => {
-    SocketApt.socket.emit('offBot', _id)
+  const sendMeScreen = (_id) => {
+    SocketApt.socket.emit('sendMeScreen', {botId: bot._id, screenId: _id})
   }
 
   const onBot = (_id) => {
@@ -57,8 +62,16 @@ export function BotEditPage() {
   if(bot && screens){
     return (
       <div style={{width: '55vmax', marginTop: '3vmax'}}>
-        <FindScreenForm bot={bot} screens={screens}/>
-        {screens.map((item, index) => <div key={index} style={{marginTop: '1vmax'}}><ScreenItem screen={item} /></div>)}
+        <FindScreenForm 
+        bot={bot} 
+        screens={screens} 
+        createScreen={createScreen} 
+        newScreenName={newScreenName} 
+        setNewScreenName={setNewScreenName} 
+        filterScreens={filterScreens}
+        setFilterScreens={setFilterScreens}
+        />
+        {screens.map((item, index) => <div key={index} style={{marginTop: '1vmax'}}><ScreenItem screen={item} sendMeScreen={sendMeScreen} deleteScreen={deleteScreen} /></div>)}
       </div>
     )
   }

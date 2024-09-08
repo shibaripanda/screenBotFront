@@ -4,7 +4,7 @@ import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import { BotEditPage } from '../../pages/BotEditPage';
 import { fix } from '../../fix/fix';
 
-export function BotItem({bot, deleteBot, offBot, onBot}) {
+export function BotItem({bot, deleteBot, offBot, onBot, workModeBot}) {
 
   const [deleteValue, setDeleteValue] = useState('')
   const navigate = useNavigate()
