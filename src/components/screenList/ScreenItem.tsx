@@ -48,7 +48,7 @@ export function ScreenItem({screen, deleteScreen, sendMeScreen}) {
           Back
         </Button> */}
         <Text fz="md" fw={500}>
-          {screen.name} ({screen.index})
+          {screen.name} 
         </Text>
       </Group>
       <Text c="dimmed" fz="xs">

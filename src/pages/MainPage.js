@@ -15,14 +15,8 @@ export function MainPage() {
   const [status, setStatus] = useState(false)
   const [bots, setBots] = useState(false)
 
-  // SocketApt.socket?.on('test', (data) => {
-  //   console.log(data)
-  // })
-
   SocketApt.socket?.on('getMyBots', (data) => {
-    console.log(data)
-    // setBots(data.sort((a ,b) => new Date(b.updatedAt) - new Date(a.updatedAt)))
-    setBots(data)
+    setBots(data.sort((a ,b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
   })
 
   useEffect(() => {
@@ -30,7 +24,6 @@ export function MainPage() {
       window.location.assign(fix.appLink)
     }
     else{
-      console.log('sssss')
       SocketApt.socket.emit('getMyBots')
       setStatus(true)
     }
@@ -53,7 +46,7 @@ export function MainPage() {
   }
 
   
-  if(bots){
+  if(bots && status){
     return (
       <div style={{width: '55vmax', marginTop: '3vmax'}}>
         <CreateNewBotForm createBot={createBot}/>

@@ -18,13 +18,14 @@ export function BotEditPage() {
   const [screens, getScreens] = useState(false)
   const [newScreenName, setNewScreenName] = useState('')
   const [filterScreens, setFilterScreens] = useState('')
+  const [status, setStatus] = useState(false)
 
   SocketApt.socket?.on('getBot', (data) => {
     console.log(data)
     setBot(data)
   })
   SocketApt.socket?.on('getScreens', (data) => {
-    console.log(+new Date(data[0].createdAt))
+    console.log(data)
     getScreens(data.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
   })
 
@@ -33,10 +34,10 @@ export function BotEditPage() {
       window.location.assign(fix.appLink)
     }
     else{
-      console.log(botId)
-      SocketApt.socket.emit('editModeBot', botId)
+      // SocketApt.socket.emit('editModeBot', botId)
       SocketApt.socket.emit('getBot', botId)
       SocketApt.socket.emit('getScreens', botId)
+      setStatus(true)
     }
   }, [botId])
 
@@ -46,7 +47,10 @@ export function BotEditPage() {
   }
 
   const createScreen = (botId, newScreenName) => {
-    SocketApt.socket.emit('createNewScreen', {botId: botId, screenName: newScreenName})
+    if(newScreenName !== ''){
+      SocketApt.socket.emit('createNewScreen', {botId: botId, screenName: newScreenName})
+    }
+    SocketApt.socket.emit('nameForNewScreen', {botId: botId, screenName: newScreenName})
     SocketApt.socket.emit('getScreens', botId)
   }
 
@@ -55,7 +59,7 @@ export function BotEditPage() {
   }
 
   
-  if(bot && screens){
+  if(bot && screens && status){
     return (
       <div style={{width: '55vmax', marginTop: '3vmax'}}>
         <FindScreenForm 
