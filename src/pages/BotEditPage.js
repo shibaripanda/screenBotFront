@@ -24,8 +24,8 @@ export function BotEditPage() {
     setBot(data)
   })
   SocketApt.socket?.on('getScreens', (data) => {
-    console.log(data)
-    getScreens(data)
+    console.log(+new Date(data[0].createdAt))
+    getScreens(data.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
   })
 
   useEffect(() => {
@@ -47,15 +47,11 @@ export function BotEditPage() {
 
   const createScreen = (botId, newScreenName) => {
     SocketApt.socket.emit('createNewScreen', {botId: botId, screenName: newScreenName})
-    // SocketApt.socket.emit('getScreens', botId)
+    SocketApt.socket.emit('getScreens', botId)
   }
 
   const sendMeScreen = (_id) => {
     SocketApt.socket.emit('sendMeScreen', {botId: bot._id, screenId: _id})
-  }
-
-  const onBot = (_id) => {
-    SocketApt.socket.emit('onBot', _id)
   }
 
   

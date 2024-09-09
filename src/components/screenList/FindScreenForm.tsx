@@ -37,13 +37,6 @@ export function FindScreenForm({bot, screen, createScreen, newScreenName, setNew
                     }}
                 />
                 <div style={{marginTop: '1vmax'}}>
-                    {/* <Button variant="default" size="xs"
-                    disabled={activButtonCreateScreen()}
-                        onClick={() => {
-                        createScreen(bot._id)
-                        }}>
-                        Create new screen
-                    </Button> */}
                     <ModalCreateScreen newScreenName={newScreenName} setNewScreenName={setNewScreenName} activButtonCreateScreen={activButtonCreateScreen} createScreen={createScreen} botId={bot._id}/>
                 </div>
             </div>
