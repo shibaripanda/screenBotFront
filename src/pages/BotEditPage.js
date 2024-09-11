@@ -25,7 +25,7 @@ export function BotEditPage() {
     setBot(data)
   })
   SocketApt.socket?.on('getScreens', (data) => {
-    console.log(data)
+    // console.log(data)
     getScreens(data.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
   })
 
@@ -70,6 +70,7 @@ export function BotEditPage() {
         setNewScreenName={setNewScreenName} 
         filterScreens={filterScreens}
         setFilterScreens={setFilterScreens}
+        sendMeScreen={sendMeScreen}
         />
         {screens.map((item, index) => <div key={index} style={{marginTop: '1vmax'}}><ScreenItem screen={item} sendMeScreen={sendMeScreen} deleteScreen={deleteScreen} /></div>)}
       </div>

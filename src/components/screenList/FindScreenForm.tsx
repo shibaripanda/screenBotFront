@@ -3,12 +3,12 @@ import { Button, Group, Paper, Text, TextInput } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
 import { ModalCreateScreen } from './ModalCreateScreen.tsx'
 
-export function FindScreenForm({bot, screen, createScreen, newScreenName, setNewScreenName, filterScreens, setFilterScreens}) {
+export function FindScreenForm({bot, screens, createScreen, newScreenName, setNewScreenName, filterScreens, setFilterScreens, sendMeScreen}) {
 
     const navigate = useNavigate()
 
     const activButtonCreateScreen = () => {
-        if(newScreenName === '') return true
+        if(newScreenName === '' || screens.map(item => item.name).includes(newScreenName)) return true
         return false
     }
 
@@ -37,7 +37,7 @@ export function FindScreenForm({bot, screen, createScreen, newScreenName, setNew
                     }}
                 />
                 <div style={{marginTop: '1vmax'}}>
-                    <ModalCreateScreen newScreenName={newScreenName} setNewScreenName={setNewScreenName} activButtonCreateScreen={activButtonCreateScreen} createScreen={createScreen} botId={bot._id}/>
+                    <ModalCreateScreen botName={bot.name} screen={screens[0]} sendMeScreen={sendMeScreen} newScreenName={newScreenName} setNewScreenName={setNewScreenName} activButtonCreateScreen={activButtonCreateScreen} createScreen={createScreen} botId={bot._id}/>
                 </div>
             </div>
 
