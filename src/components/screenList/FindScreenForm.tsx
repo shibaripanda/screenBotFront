@@ -1,9 +1,8 @@
 import React from 'react'
 import { Button, Group, Paper, Text, TextInput } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
-import { ModalCreateScreen } from './ModalCreateScreen.tsx'
 
-export function FindScreenForm({bot, screens, createScreen, newScreenName, setNewScreenName, filterScreens, setFilterScreens, sendMeScreen}) {
+export function FindScreenForm({bot, screens, createScreen, newScreenName, setNewScreenName, filterScreens, setFilterScreens}) {
 
     const navigate = useNavigate()
 
@@ -37,7 +36,14 @@ export function FindScreenForm({bot, screens, createScreen, newScreenName, setNe
                     }}
                 />
                 <div style={{marginTop: '1vmax'}}>
-                    <ModalCreateScreen botName={bot.name} screen={screens[0]} sendMeScreen={sendMeScreen} newScreenName={newScreenName} setNewScreenName={setNewScreenName} activButtonCreateScreen={activButtonCreateScreen} createScreen={createScreen} botId={bot._id}/>
+                    <Button variant="default" size="xs"
+                        disabled={activButtonCreateScreen()}
+                        onClick={() => {
+                            createScreen(newScreenName)
+                            }}>
+                        Create new screen
+                    </Button>
+                    
                 </div>
             </div>
 

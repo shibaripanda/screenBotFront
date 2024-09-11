@@ -1,10 +1,8 @@
-import { Button, Paper, Text, Group, TextInput } from '@mantine/core';
+import { Button, Paper, Text, Group, TextInput } from '@mantine/core'
 import React, { useState } from 'react'
-import { Link, Route, Routes, useNavigate } from 'react-router-dom';
-import { BotEditPage } from '../../pages/BotEditPage';
-import { fix } from '../../fix/fix';
+import { useNavigate } from 'react-router-dom'
 
-export function BotItem({bot, deleteBot, offBot, onBot, workModeBot}) {
+export function BotItem({bot, deleteBot, offBot, onBot}) {
 
   const [deleteValue, setDeleteValue] = useState('')
   const navigate = useNavigate()

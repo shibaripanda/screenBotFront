@@ -21,11 +21,9 @@ export function BotEditPage() {
   const [status, setStatus] = useState(false)
 
   SocketApt.socket?.on('getBot', (data) => {
-    console.log(data)
     setBot(data)
   })
   SocketApt.socket?.on('getScreens', (data) => {
-    // console.log(data)
     getScreens(data.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
   })
 
@@ -41,17 +39,29 @@ export function BotEditPage() {
     }
   }, [botId])
 
+  const protectScrreen = (screenId, status) => {
+    SocketApt.socket.emit('protectScrreen', {botId: bot._id, status: status, screenId: screenId})
+    screens[screens.findIndex(item => item._id === screenId)].protect = status
+    getScreens(screens)
+  }
+
+  const getScreensFromServer = () => {
+    SocketApt.socket.emit('getScreens', botId)
+  }
+
   const deleteScreen = (_id) => {
     SocketApt.socket.emit('deleteScreen', _id)
     getScreens(screens.filter(item => item._id !== _id))
   }
 
-  const createScreen = (botId, newScreenName) => {
-    if(newScreenName !== ''){
-      SocketApt.socket.emit('createNewScreen', {botId: botId, screenName: newScreenName})
-    }
-    SocketApt.socket.emit('nameForNewScreen', {botId: botId, screenName: newScreenName})
-    SocketApt.socket.emit('getScreens', botId)
+  const createScreen = (newScreenName) => {
+    SocketApt.socket.emit('createNewScreen', {botId: bot._id, screenName: newScreenName})
+    setNewScreenName('')
+    SocketApt.socket.emit('getScreens', bot._id)
+  }
+
+  const editScreen = (screenId) => {
+    SocketApt.socket.emit('idForEditScreen', {botId: bot._id, screenId: screenId})
   }
 
   const sendMeScreen = (_id) => {
@@ -70,9 +80,17 @@ export function BotEditPage() {
         setNewScreenName={setNewScreenName} 
         filterScreens={filterScreens}
         setFilterScreens={setFilterScreens}
-        sendMeScreen={sendMeScreen}
         />
-        {screens.map((item, index) => <div key={index} style={{marginTop: '1vmax'}}><ScreenItem screen={item} sendMeScreen={sendMeScreen} deleteScreen={deleteScreen} /></div>)}
+        {screens.map((item, index) => <div key={index} style={{marginTop: '1vmax'}}>
+          <ScreenItem
+            protectScrreen={protectScrreen} 
+            editScreen={editScreen} 
+            bot={bot} 
+            screen={item} 
+            sendMeScreen={sendMeScreen} 
+            deleteScreen={deleteScreen}
+            getScreensFromServer={getScreensFromServer} 
+          /></div>)}
       </div>
     )
   }

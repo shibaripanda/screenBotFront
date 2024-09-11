@@ -1,7 +1,8 @@
 import { Button, Paper, Text, Group, TextInput } from '@mantine/core';
 import React, { useState } from 'react'
+import { ModalCreateScreen } from './ModalCreateScreen.tsx'
 
-export function ScreenItem({screen, deleteScreen, sendMeScreen}) {
+export function ScreenItem({protectScrreen, getScreensFromServer, editScreen, bot, screen, deleteScreen, sendMeScreen}) {
 
   const [deleteValue, setDeleteValue] = useState('')
 
@@ -23,7 +24,7 @@ export function ScreenItem({screen, deleteScreen, sendMeScreen}) {
       <Text c="dimmed" fz="xs">
         {new Date(screen.createdAt).toLocaleDateString()}
       </Text>
-      <Text c="dimmed" fz="xs">
+      {/* <Text c="dimmed" fz="xs">
         Text: {screen.text}
       </Text>
       <Text c="dimmed" fz="xs">
@@ -37,11 +38,16 @@ export function ScreenItem({screen, deleteScreen, sendMeScreen}) {
       </Text>
       <Text c="dimmed" fz="xs">
         Buttons: {screen.buttons.length}
-      </Text>
-      <Text c="dimmed" fz="xs">
-        Protect: {screen.protect}
-      </Text>
+      </Text> */}
       <Group justify="flex-end" mt="md">
+        <ModalCreateScreen 
+          modalTitle={`Edit screen for ${bot.name}`} 
+          screen={screen}
+          editScreen={editScreen} 
+          sendMeScreen={sendMeScreen}
+          getScreensFromServer={getScreensFromServer}
+          protectScrreen={protectScrreen}
+          />
         <Button variant="default" size="xs"
         onClick={() => {
           sendMeScreen(screen._id)
@@ -62,6 +68,7 @@ export function ScreenItem({screen, deleteScreen, sendMeScreen}) {
          size="xs"
          onClick={() => {
           deleteScreen(screen._id)
+          setDeleteValue('')
         }}
          >
           Delete
