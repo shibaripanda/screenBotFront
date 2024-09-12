@@ -1,6 +1,6 @@
 
 import '@mantine/core/styles.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import '../styles/App.css'
 import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
 import { SocketApt } from '../socket/api/socket-api.ts'
@@ -15,57 +15,58 @@ export function BotEditPage() {
   useConnectSocket()
   
   const [bot, setBot] = useState(false)
-  const [screens, getScreens] = useState(false)
+  const [screens, getScreens] = useState([])
   const [newScreenName, setNewScreenName] = useState('')
   const [filterScreens, setFilterScreens] = useState('')
   const [status, setStatus] = useState(false)
 
+
   SocketApt.socket?.on('getBot', (data) => {
     setBot(data)
   })
-  SocketApt.socket?.on('getScreens', (data) => {
-    getScreens(data.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
+  SocketApt.socket?.on('getScreens', async (data) => {
+    getScreens(await data.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
+    console.log('recieve screens')
   })
+
 
   useEffect(() => {
     if(!sessionStorage.getItem('token')){
       window.location.assign(fix.appLink)
     }
     else{
-      // SocketApt.socket.emit('editModeBot', botId)
       SocketApt.socket.emit('getBot', botId)
       SocketApt.socket.emit('getScreens', botId)
       setStatus(true)
     }
   }, [botId])
 
+  const screenFilter = useMemo(() => {
+      return screens.filter(item => item.name.toLowerCase().includes(filterScreens.toLowerCase()))
+    }, [filterScreens, screens]
+  )
+
+
   const protectScrreen = (screenId, status) => {
     SocketApt.socket.emit('protectScrreen', {botId: bot._id, status: status, screenId: screenId})
     screens[screens.findIndex(item => item._id === screenId)].protect = status
     getScreens(screens)
   }
-
-  const getScreensFromServer = () => {
-    SocketApt.socket.emit('getScreens', botId)
+  const clearScreen = async (screenId) => {
+    SocketApt.socket.emit('clearScreen', {botId: bot._id, screenId: screenId})
   }
-
-  const deleteScreen = (_id) => {
-    SocketApt.socket.emit('deleteScreen', _id)
-    getScreens(screens.filter(item => item._id !== _id))
+  const deleteScreen = async (screenId) => {
+    SocketApt.socket.emit('deleteScreen', screenId)
+    getScreens(screens.filter(item => item._id !== screenId))
   }
-
-  const createScreen = (newScreenName) => {
+  const createScreen = async (newScreenName) => {
     SocketApt.socket.emit('createNewScreen', {botId: bot._id, screenName: newScreenName})
-    setNewScreenName('')
-    SocketApt.socket.emit('getScreens', bot._id)
   }
-
   const editScreen = (screenId) => {
     SocketApt.socket.emit('idForEditScreen', {botId: bot._id, screenId: screenId})
   }
-
-  const sendMeScreen = (_id) => {
-    SocketApt.socket.emit('sendMeScreen', {botId: bot._id, screenId: _id})
+  const sendMeScreen = (screenId) => {
+    SocketApt.socket.emit('sendMeScreen', {botId: bot._id, screenId: screenId})
   }
 
   
@@ -74,14 +75,15 @@ export function BotEditPage() {
       <div style={{width: '55vmax', marginTop: '3vmax'}}>
         <FindScreenForm 
         bot={bot} 
-        screens={screens} 
+        screens={screens}
+        screenFilterLength={screenFilter.length} 
         createScreen={createScreen} 
         newScreenName={newScreenName} 
         setNewScreenName={setNewScreenName} 
         filterScreens={filterScreens}
         setFilterScreens={setFilterScreens}
         />
-        {screens.map((item, index) => <div key={index} style={{marginTop: '1vmax'}}>
+        {screenFilter.map((item, index) => <div key={index} style={{marginTop: '1vmax'}}>
           <ScreenItem
             protectScrreen={protectScrreen} 
             editScreen={editScreen} 
@@ -89,7 +91,7 @@ export function BotEditPage() {
             screen={item} 
             sendMeScreen={sendMeScreen} 
             deleteScreen={deleteScreen}
-            getScreensFromServer={getScreensFromServer} 
+            clearScreen={clearScreen} 
           /></div>)}
       </div>
     )

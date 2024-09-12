@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Group, Paper, Text, TextInput } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
 
-export function FindScreenForm({bot, screens, createScreen, newScreenName, setNewScreenName, filterScreens, setFilterScreens}) {
+export function FindScreenForm({screenFilterLength, bot, screens, createScreen, newScreenName, setNewScreenName, filterScreens, setFilterScreens}) {
 
     const navigate = useNavigate()
 
@@ -40,6 +40,7 @@ export function FindScreenForm({bot, screens, createScreen, newScreenName, setNe
                         disabled={activButtonCreateScreen()}
                         onClick={() => {
                             createScreen(newScreenName)
+                            setNewScreenName('')
                             }}>
                         Create new screen
                     </Button>
@@ -57,6 +58,7 @@ export function FindScreenForm({bot, screens, createScreen, newScreenName, setNe
                     setFilterScreens(event.currentTarget.value)
                 }}
             />
+            <Text style={{marginTop: '0.3vmax', marginLeft: '0.5vmax'}} c="dimmed" fz="xs">{screenFilterLength} ({screens.length})</Text>
         </Paper>
     )
 
