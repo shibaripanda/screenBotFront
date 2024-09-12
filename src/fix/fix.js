@@ -1,6 +1,6 @@
 export const fix = {
 
-    appLink: 'https://39dd-206-81-30-38.ngrok-free.app/',
+    appLink: 'https://53b3-206-81-30-38.ngrok-free.app',
 
     serverLink: 'http://localhost:5002',
 
