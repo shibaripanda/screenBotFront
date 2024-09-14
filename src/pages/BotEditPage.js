@@ -59,6 +59,9 @@ export function BotEditPage() {
     SocketApt.socket.emit('deleteScreen', screenId)
     getScreens(screens.filter(item => item._id !== screenId))
   }
+  const editButtons = async (screenId, buttons) => {
+    SocketApt.socket.emit('editButtons', {botId: bot._id, screenId: screenId, buttons: buttons})
+  }
   const createScreen = async (newScreenName) => {
     SocketApt.socket.emit('createNewScreen', {botId: bot._id, screenName: newScreenName})
   }
@@ -85,13 +88,15 @@ export function BotEditPage() {
         />
         {screenFilter.map((item, index) => <div key={index} style={{marginTop: '1vmax'}}>
           <ScreenItem
+            screens={screens}
             protectScrreen={protectScrreen} 
             editScreen={editScreen} 
             bot={bot} 
             screen={item} 
             sendMeScreen={sendMeScreen} 
             deleteScreen={deleteScreen}
-            clearScreen={clearScreen} 
+            clearScreen={clearScreen}
+            editButtons={editButtons} 
           /></div>)}
       </div>
     )
