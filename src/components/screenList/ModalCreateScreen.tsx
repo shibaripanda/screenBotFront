@@ -7,9 +7,10 @@ export function ModalCreateScreen({screens, editButtons, clearScreen, protectScr
   const [opened, { open, close }] = useDisclosure(false)
   const [checked, setChecked] = useState(screen.protect)
   const [editButtonsMode, setEditButtonsMode] = useState(false)
-  const [buttons, setButtons] = useState(JSON.parse(JSON.stringify(screen.buttons)))
+  const [buttons, setButtons] = useState(screen.buttons)
   const [newBut, setNewBut] = useState({text: '', to: '', action: ''})
   const [greate, setGreate] = useState('')
+  const [controlCheck, setControlCheck] = useState(true)
 
   const addOrDeleteButton = (but: object, obj: any) => {
     if(but['to'] === 'addNewBut'){
@@ -35,18 +36,50 @@ export function ModalCreateScreen({screens, editButtons, clearScreen, protectScr
     setButtons(JSON.parse(JSON.stringify(buttons)))
   }
 
+  const textSize = () => {
+    if(screen.text && screen.text.length > 200){
+      return (
+        <Spoiler maxHeight={30} showLabel="Show more" hideLabel="Hide"><Text c="dimmed" fz="xl">
+          Text: {screen.text}
+        </Text></Spoiler>
+      )
+    }
+    return (
+      <Text c="dimmed" fz="xl">
+          Text: {screen.text}
+      </Text>
+    )
+  }
+
   const keyboard = () => {
 
-    const toolTipText = (text) => {
-      if(text === '➕') return 'Add button'
-      return 'Delete' 
-    }
-
-    const saveActivButtons = () => {
-      if(JSON.parse(JSON.stringify(buttons)) === JSON.parse(JSON.stringify(screen.buttons))){
+    function isUrlValid(url){
+      try {
+        new URL(url)
+         return false
+      }
+      catch(e){
         return true
       }
-      return false
+    }
+    
+    const toolTipText = (text, name) => {
+      if(text === '➕') return 'Add button'
+      return 'Delete ' + name.name
+    }
+
+    const showSaveKeyboard = () => {
+      if(!controlCheck){
+        return (
+          <Button style={{marginTop: '2vmax'}} variant="default" size="xs"
+              onClick={() => {
+                editButtons(screen._id, buttons)
+                setControlCheck(true)
+              }}>
+              Save keyboard
+            </Button>
+        )
+      }
     }
 
     if(editButtonsMode){
@@ -70,6 +103,10 @@ export function ModalCreateScreen({screens, editButtons, clearScreen, protectScr
         if(but.to === 'addNewBut'){
           if(newBut.text === '' || newBut.to === '' || newBut.action === ''){
             return true
+          }
+          if(newBut.action === 'url'){
+            console.log(newBut.to, isUrlValid(newBut.to))
+              return isUrlValid(newBut.to)
           }
           return false
         }
@@ -116,17 +153,24 @@ export function ModalCreateScreen({screens, editButtons, clearScreen, protectScr
 
       return (
         <div style={{marginTop: '1vmax'}}>
+        <div style={{width: '100%', marginTop: '2vmax', marginBottom: '2vmax'}}>
+              {creatingButtonName()}
+              <div style={{marginTop: '1vmax'}}>
+                {creatingButtonTo()}
+              </div>
+            </div>
           {timeButtons.map((item, index) => 
             <Grid key={index}>
               {item.map((but, index) => 
               <Grid.Col span={12 / item.length} key={index}>
-                <Tooltip label={toolTipText(but.text)}>
+                <Tooltip label={toolTipText(but.text, (screens.find(item => item._id === but.to)))}>
                   <Button variant="outline" fullWidth
                   disabled={disabledButton(but)}
                   onClick={() => {
                     addOrDeleteButton(but, {text: newBut.text, to: newBut.to, action: newBut.action})
                     setNewBut({text: '', to: '', action: ''})
                     setGreate('')
+                    setControlCheck(false)
                   }}>
                     {but.text}
                   </Button>
@@ -134,20 +178,8 @@ export function ModalCreateScreen({screens, editButtons, clearScreen, protectScr
               </Grid.Col>)}
             </Grid>)}
 
-            <div style={{width: '100%', marginTop: '2vmax'}}>
-              {creatingButtonName()}
-              <div style={{marginTop: '1vmax'}}>
-                {creatingButtonTo()}
-              </div>
-            </div>
-            
-            <Button style={{marginTop: '2vmax'}} variant="default" size="xs"
-            disabled={saveActivButtons()}
-              onClick={() => {
-                editButtons(screen._id, buttons)
-              }}>
-              Save keyboard
-            </Button>
+            {showSaveKeyboard()}
+
         </div>
       )
     }
@@ -157,18 +189,23 @@ export function ModalCreateScreen({screens, editButtons, clearScreen, protectScr
             <Grid key={index}>
               {item.map((but, index) => 
               <Grid.Col span={12 / item.length} key={index}>
-                <Button variant="outline" fullWidth>
-                  {but.text}
-                </Button>
+                <Tooltip label={'to: ' + (screens.find(item => item._id === but.to).name)}>
+                  <Button variant="outline" fullWidth>
+                    {but.text}
+                  </Button>
+                </Tooltip>
               </Grid.Col>)}
             </Grid>)}
+
+            {showSaveKeyboard()}
+
         </div>
     )
   }
 
   return (
     <>
-      <Modal opened={opened} 
+      <Modal size={'xl'} opened={opened} 
         onClose={() => {
             editScreen('')
             setTimeout(() => {close()}, )
@@ -181,6 +218,7 @@ export function ModalCreateScreen({screens, editButtons, clearScreen, protectScr
             <Button style={{marginLeft: '1vmax'}} color='red' size="xs"
               onClick={() => {
                 clearScreen(screen._id)
+                setButtons([])
               }}>
               Clear
             </Button>
@@ -204,37 +242,68 @@ export function ModalCreateScreen({screens, editButtons, clearScreen, protectScr
             onChange={(event) => {
               setChecked(event.currentTarget.checked)
               protectScrreen(screen._id, event.currentTarget.checked)
-            }}
-          />
-        <Text c="dimmed" fz="xl">
-          Media: {screen.media.map(item => '🖼')}
-        </Text>
-        <Text c="dimmed" fz="xl">
-          Documents: {screen.document.map(item => '🗂')}
-        </Text>
-        <Text c="dimmed" fz="xl">
-          Audio: {screen.audio.map(item => '🎼')}
-        </Text>
-        <Group>
-        <Text c="dimmed" fz="xl">
-          Text: 
-        </Text>
-        <Spoiler maxHeight={30} showLabel="Show more" hideLabel="Hide">{screen.text}</Spoiler>
-        </Group>
-        <Text c="dimmed" fz="xl">
-          Buttons: <Switch
-            style={{marginTop: '1.5vmax', marginBottom: '1.5vmax'}}
+        }}/>
+
+        <table>
+        <tbody>
+          <tr>
+            <td><Text c="dimmed" fz="xl">Media: </Text></td>
+            <td>{screen.media.map((item, index) =>
+              <Tooltip label={item.tx} key={index}> 
+                <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
+                  onClick={() => {
+                    sendMeScreen(screen._id)
+                  }}>
+                  '🖼'
+                </Button>
+              </Tooltip>)}
+            </td>
+          </tr>
+          <tr>
+            <td><Text c="dimmed" fz="xl">Documents: </Text></td>
+            <td>{screen.document.map((item, index) =>
+              <Tooltip label={item.tx} key={index}>
+                <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
+                    onClick={() => {
+                      sendMeScreen(screen._id)
+                    }}>
+                    '🗂'
+                </Button>
+              </Tooltip> )}
+            </td>
+          </tr>
+          <tr>
+            <td><Text c="dimmed" fz="xl">Audio: </Text></td>
+            <td>{screen.audio.map((item, index) => 
+              <Tooltip label={item.tx} key={index}>
+                <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
+                    onClick={() => {
+                      sendMeScreen(screen._id)
+                    }}>
+                    '🎼'
+                </Button>
+              </Tooltip>)}
+            </td>
+          </tr>
+        </tbody>
+        </table>
+
+        {textSize()}
+
+        <div style={{marginTop: '3vmax'}} >
+          <Switch
+            style={{marginTop: '2.5vmax', marginBottom: '1.5vmax'}}
             label="Edit buttons mode"
             radius="lg"
             color='red'
             checked={editButtonsMode}
             onChange={(event) => {
               setEditButtonsMode(event.currentTarget.checked)
-              if(!event.currentTarget.checked) setButtons(JSON.parse(JSON.stringify(buttons)))
+              if(!event.currentTarget.checked) setButtons(buttons)
             }}
           />
-        </Text>
-
+        </div>
+        
         {keyboard()}
 
       </Modal>
@@ -247,5 +316,5 @@ export function ModalCreateScreen({screens, editButtons, clearScreen, protectScr
         Edit
       </Button>
     </>
-  );
+  )
 }

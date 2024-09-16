@@ -35,6 +35,7 @@ export function BotEditPage() {
       window.location.assign(fix.appLink)
     }
     else{
+      SocketApt.socket.emit('idForEditScreen', {botId: botId, screenId: ''})
       SocketApt.socket.emit('getBot', botId)
       SocketApt.socket.emit('getScreens', botId)
       setStatus(true)

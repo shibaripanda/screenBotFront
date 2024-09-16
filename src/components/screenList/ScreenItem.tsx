@@ -11,6 +11,39 @@ export function ScreenItem({screens, editButtons, clearScreen, protectScrreen, e
     return true
   }
 
+  const startScreen = () => {
+    if(screen.name !== 'Start screen'){
+      return (
+        <>
+        <TextInput
+              size="xs"
+              placeholder='Text screen`s name for delete'
+              value={deleteValue}
+              onChange={(event) => {
+                setDeleteValue(event.currentTarget.value)
+              }}
+              />
+        <Button
+          disabled={deleteButton()}
+          color='red'
+          size="xs"
+          onClick={() => {
+            deleteScreen(screen._id)
+            setDeleteValue('')
+          }}
+          >
+            Delete
+          </Button>
+          </>
+      )
+    }
+  }
+
+  const usedCount = () => {
+    const res = screens.map(item => item.buttons)
+    return res.flat(Infinity).filter(item => item.to === screen._id).length
+  }
+
   return (
     <Paper withBorder p="lg" radius="md" shadow="md">
       <Group justify="space-between" mb="xs">
@@ -23,6 +56,9 @@ export function ScreenItem({screens, editButtons, clearScreen, protectScrreen, e
       </Text>
       <Text c="dimmed" fz="xs">
         {new Date(screen.createdAt).toLocaleDateString()}
+      </Text>
+      <Text c="dimmed" fz="xs">
+        Activ links to this screen: {usedCount()}
       </Text>
       {/* <Text c="dimmed" fz="xs">
         Text: {screen.text}
@@ -56,7 +92,8 @@ export function ScreenItem({screens, editButtons, clearScreen, protectScrreen, e
         }}>
           Send me
         </Button>
-        <TextInput
+        {startScreen()}
+        {/* <TextInput
             size="xs"
             placeholder='Text screen`s name for delete'
             value={deleteValue}
@@ -74,7 +111,7 @@ export function ScreenItem({screens, editButtons, clearScreen, protectScrreen, e
         }}
          >
           Delete
-        </Button>
+        </Button> */}
       </Group>
     </Paper>
   );
