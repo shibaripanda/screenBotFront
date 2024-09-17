@@ -2,7 +2,7 @@ import { Button, Paper, Text, Group, TextInput } from '@mantine/core';
 import React, { useState } from 'react'
 import { ModalCreateScreen } from './ModalCreateScreen.tsx'
 
-export function ScreenItem({updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, bot, screen, deleteScreen, sendMeScreen}) {
+export function ScreenItem({screenForAnswer, updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, bot, screen, deleteScreen, sendMeScreen}) {
 
   const [deleteValue, setDeleteValue] = useState('')
 
@@ -86,6 +86,7 @@ export function ScreenItem({updateVariable, screens, editButtons, clearScreen, p
           editButtons={editButtons}
           screens={screens}
           updateVariable={updateVariable}
+          screenForAnswer={screenForAnswer}
           />
         <Button variant="default" size="xs"
         onClick={() => {

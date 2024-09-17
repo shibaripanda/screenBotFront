@@ -69,6 +69,9 @@ export function BotEditPage() {
   const updateVariable = async (screenId, variable) => {
     SocketApt.socket.emit('updateVariable', {botId: bot._id, screenId: screenId, variable: variable})
   }
+  const screenForAnswer = (screenId, ansScreen) => {
+    SocketApt.socket.emit('screenForAnswer', {botId: bot._id, screenId: screenId, ansScreen: ansScreen})
+  }
   const editScreen = (screenId) => {
     SocketApt.socket.emit('idForEditScreen', {botId: bot._id, screenId: screenId})
   }
@@ -101,7 +104,8 @@ export function BotEditPage() {
             deleteScreen={deleteScreen}
             clearScreen={clearScreen}
             editButtons={editButtons}
-            updateVariable={updateVariable} 
+            updateVariable={updateVariable}
+            screenForAnswer={screenForAnswer} 
           /></div>)}
       </div>
     )

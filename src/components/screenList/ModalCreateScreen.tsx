@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useDisclosure } from '@mantine/hooks'
 import { Modal, Button, Text, Group, Switch, Grid, Spoiler, Tooltip, TextInput, Autocomplete } from '@mantine/core'
 
-export function ModalCreateScreen({updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, modalTitle, screen, sendMeScreen}) {
+export function ModalCreateScreen({screenForAnswer, updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, modalTitle, screen, sendMeScreen}) {
 
   const [opened, { open, close }] = useDisclosure(false)
   const [checked, setChecked] = useState(screen.protect)
@@ -12,6 +12,7 @@ export function ModalCreateScreen({updateVariable, screens, editButtons, clearSc
   const [greate, setGreate] = useState('')
   const [controlCheck, setControlCheck] = useState(true)
   const [variable, setVariable] = useState('')
+  const [screenIfAnswer, setScreenIfAnswer] = useState('')
 
   const addOrDeleteButton = (but: object, obj: any) => {
     if(but['to'] === 'addNewBut'){
@@ -66,13 +67,29 @@ export function ModalCreateScreen({updateVariable, screens, editButtons, clearSc
     }
     else if(screen.variable){
       return (
+        <>
+       <Autocomplete
+          description='Screen if recived answer'
+          style={{marginTop: '0.5vmax'}}
+          placeholder={screens.find(item => item._id === screen.ansScreen) ? screens.find(item => item._id === screen.ansScreen)['name'] : 'not set'}
+          data={screens.map(item => item.name + ' ' + item._id)}
+          value={screenIfAnswer}
+          onChange={(event) => {
+              // setScreenIfAnswer(event)
+              console.log(event.split(' ')[event.split(' ').length - 1])
+              screenForAnswer(screen._id, event.split(' ')[event.split(' ').length - 1])
+            }
+          }
+        />
         <Button style={{marginTop: '1vmax'}} variant="default" size="xs"
         onClick={() => {
           updateVariable(screen._id, '')
+          screenForAnswer(screen._id, '')
           setVariable('')
         }}>
         Delete variable "{screen.variable}"
       </Button>
+        </>
       )
     }
   }
