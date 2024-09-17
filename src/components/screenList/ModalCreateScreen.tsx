@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useDisclosure } from '@mantine/hooks'
 import { Modal, Button, Text, Group, Switch, Grid, Spoiler, Tooltip, TextInput, Autocomplete } from '@mantine/core'
 
-export function ModalCreateScreen({screens, editButtons, clearScreen, protectScrreen, editScreen, modalTitle, screen, sendMeScreen}) {
+export function ModalCreateScreen({updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, modalTitle, screen, sendMeScreen}) {
 
   const [opened, { open, close }] = useDisclosure(false)
   const [checked, setChecked] = useState(screen.protect)
@@ -11,6 +11,7 @@ export function ModalCreateScreen({screens, editButtons, clearScreen, protectScr
   const [newBut, setNewBut] = useState({text: '', to: '', action: ''})
   const [greate, setGreate] = useState('')
   const [controlCheck, setControlCheck] = useState(true)
+  const [variable, setVariable] = useState('')
 
   const addOrDeleteButton = (but: object, obj: any) => {
     if(but['to'] === 'addNewBut'){
@@ -49,6 +50,31 @@ export function ModalCreateScreen({screens, editButtons, clearScreen, protectScr
           Text: {screen.text}
       </Text>
     )
+  }
+
+  const saveVarButton = () => {
+    if(variable !== screen.variable && variable !== ''){
+      return(
+        <Button style={{marginTop: '1vmax'}} variant="default" size="xs"
+          onClick={() => {
+            updateVariable(screen._id, variable)
+            setVariable('')
+          }}>
+          Save variable
+        </Button>
+      )
+    }
+    else if(screen.variable){
+      return (
+        <Button style={{marginTop: '1vmax'}} variant="default" size="xs"
+        onClick={() => {
+          updateVariable(screen._id, '')
+          setVariable('')
+        }}>
+        Delete variable "{screen.variable}"
+      </Button>
+      )
+    }
   }
 
   const keyboard = () => {
@@ -291,6 +317,16 @@ export function ModalCreateScreen({screens, editButtons, clearScreen, protectScr
         {textSize()}
 
         <div style={{marginTop: '3vmax'}} >
+          <TextInput
+                description='Save the answer on this screen to a variable'
+                placeholder={screen.variable ? screen.variable : 'not set'}
+                value={variable}
+                onChange={(event) => {
+                  setVariable(event.currentTarget.value)
+                }}
+          />
+          {saveVarButton()}
+          
           <Switch
             style={{marginTop: '2.5vmax', marginBottom: '1.5vmax'}}
             label="Edit buttons mode"
