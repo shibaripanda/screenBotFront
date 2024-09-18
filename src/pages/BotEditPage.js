@@ -8,6 +8,7 @@ import { fix } from '../fix/fix.js'
 import { useParams } from 'react-router-dom'
 import { FindScreenForm } from '../components/screenList/FindScreenForm.tsx'
 import { ScreenItem } from '../components/screenList/ScreenItem.tsx'
+import { Grid } from '@mantine/core'
 
 export function BotEditPage() {
 
@@ -82,31 +83,37 @@ export function BotEditPage() {
   
   if(bot && screens && status){
     return (
-      <div style={{width: '55vmax', marginTop: '3vmax'}}>
+      <div style={{width: '75vmax', marginTop: '3vmax', marginBottom: '3vmax'}}>
         <FindScreenForm 
-        bot={bot} 
-        screens={screens}
-        screenFilterLength={screenFilter.length} 
-        createScreen={createScreen} 
-        newScreenName={newScreenName} 
-        setNewScreenName={setNewScreenName} 
-        filterScreens={filterScreens}
-        setFilterScreens={setFilterScreens}
+          bot={bot} 
+          screens={screens}
+          screenFilterLength={screenFilter.length} 
+          createScreen={createScreen} 
+          newScreenName={newScreenName} 
+          setNewScreenName={setNewScreenName} 
+          filterScreens={filterScreens}
+          setFilterScreens={setFilterScreens}
         />
-        {screenFilter.map((item, index) => <div key={index} style={{marginTop: '1vmax'}}>
-          <ScreenItem
-            screens={screens}
-            protectScrreen={protectScrreen} 
-            editScreen={editScreen} 
-            bot={bot} 
-            screen={item} 
-            sendMeScreen={sendMeScreen} 
-            deleteScreen={deleteScreen}
-            clearScreen={clearScreen}
-            editButtons={editButtons}
-            updateVariable={updateVariable}
-            screenForAnswer={screenForAnswer} 
-          /></div>)}
+        <Grid>
+          {screenFilter.map((item, index) => 
+          <Grid.Col span={4} key={index}>
+            <div style={{marginTop: '1vmax'}}>
+              <ScreenItem
+                screens={screens}
+                protectScrreen={protectScrreen} 
+                editScreen={editScreen} 
+                bot={bot} 
+                screen={item} 
+                sendMeScreen={sendMeScreen} 
+                deleteScreen={deleteScreen}
+                clearScreen={clearScreen}
+                editButtons={editButtons}
+                updateVariable={updateVariable}
+                screenForAnswer={screenForAnswer} 
+              />
+            </div>
+          </Grid.Col>)}
+        </Grid>
       </div>
     )
   }

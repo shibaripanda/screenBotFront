@@ -14,27 +14,36 @@ export function ScreenItem({screenForAnswer, updateVariable, screens, editButton
   const startScreen = () => {
     if(screen.name !== 'Start screen'){
       return (
-        <>
-        <TextInput
-              size="xs"
-              placeholder='Text screen`s name for delete'
-              value={deleteValue}
-              onChange={(event) => {
-                setDeleteValue(event.currentTarget.value)
-              }}
-              />
-        <Button
-          disabled={deleteButton()}
-          color='red'
-          size="xs"
-          onClick={() => {
-            deleteScreen(screen._id)
-            setDeleteValue('')
-          }}
+        <Group justify="flex-end" mt="md" grow>
+          <TextInput
+            size="xs"
+            placeholder='Text screen`s name for delete'
+            value={deleteValue}
+            onChange={(event) => {
+              setDeleteValue(event.currentTarget.value)
+            }}
+          />
+        </Group>
+      )
+    }
+  }
+
+  const deleteBut = () => {
+    if(!deleteButton()){
+      return (
+        <Group justify="flex-end" mt="md">
+          <Button
+            disabled={deleteButton()}
+            color='red'
+            size="xs"
+            onClick={() => {
+              deleteScreen(screen._id)
+              setDeleteValue('')
+            }}
           >
             Delete
           </Button>
-          </>
+        </Group>
       )
     }
   }
@@ -60,8 +69,8 @@ export function ScreenItem({screenForAnswer, updateVariable, screens, editButton
       <Text c="dimmed" fz="xs">
         Activ links to this screen: {usedCount()}
       </Text>
-      {/* <Text c="dimmed" fz="xs">
-        Text: {screen.text}
+      <Text c="dimmed" fz="xs">
+        Text: {screen.text.substring(0, 25)}...
       </Text>
       <Text c="dimmed" fz="xs">
         Media: {screen.media.length}
@@ -72,12 +81,27 @@ export function ScreenItem({screenForAnswer, updateVariable, screens, editButton
       <Text c="dimmed" fz="xs">
         Audio: {screen.audio.length}
       </Text>
-      <Text c="dimmed" fz="xs">
-        Buttons: {screen.buttons.length}
-      </Text> */}
-      <Group justify="flex-end" mt="md">
+      <Group justify="flex-end" mt="md" grow>
+        <Button variant="default" size="xs"
+          onClick={() => {
+            sendMeScreen(screen._id)
+          }}>
+          Send me
+        </Button>
         <ModalCreateScreen 
-          modalTitle={`Edit screen for ${bot.name}`} 
+          modalTitle={
+            <>
+              <div>
+                {`Edit screen for ${bot.name} (${screen.name})`}
+              </div>
+              <div style={{marginTop: '1vmax'}}>
+              ❗️⚠️❗️⚠️❗️⚠️❗️⚠️❗️⚠️❗️⚠️❗️⚠️❗️⚠️❗️⚠️
+              </div>
+              <div style={{marginTop: '1vmax'}}>
+                Content sent to the bot will be added to this screen
+              </div>
+            </>
+          } 
           screen={screen}
           editScreen={editScreen} 
           sendMeScreen={sendMeScreen}
@@ -87,34 +111,10 @@ export function ScreenItem({screenForAnswer, updateVariable, screens, editButton
           screens={screens}
           updateVariable={updateVariable}
           screenForAnswer={screenForAnswer}
-          />
-        <Button variant="default" size="xs"
-        onClick={() => {
-          sendMeScreen(screen._id)
-        }}>
-          Send me
-        </Button>
-        {startScreen()}
-        {/* <TextInput
-            size="xs"
-            placeholder='Text screen`s name for delete'
-            value={deleteValue}
-            onChange={(event) => {
-              setDeleteValue(event.currentTarget.value)
-            }}
-            />
-        <Button
-         disabled={deleteButton()}
-         color='red'
-         size="xs"
-         onClick={() => {
-          deleteScreen(screen._id)
-          setDeleteValue('')
-        }}
-         >
-          Delete
-        </Button> */}
+        />
       </Group>
+      {startScreen()}
+      {deleteBut()}
     </Paper>
-  );
+  )
 }

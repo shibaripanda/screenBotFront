@@ -48,7 +48,7 @@ export function MainPage() {
   
   if(bots && status){
     return (
-      <div style={{width: '55vmax', marginTop: '3vmax'}}>
+      <div style={{width: '55vmax', marginTop: '3vmax', marginBottom: '3vmax'}}>
         <CreateNewBotForm createBot={createBot}/>
         {bots.map((item, index) => <div key={index} style={{marginTop: '1vmax'}}><BotItem bot={item} deleteBot={deleteBot} onBot={onBot} offBot={offBot}/></div>)}
       </div>

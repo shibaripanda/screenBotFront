@@ -233,7 +233,13 @@ export function ModalCreateScreen({screenForAnswer, updateVariable, screens, edi
               {item.map((but, index) => 
               <Grid.Col span={12 / item.length} key={index}>
                 <Tooltip label={'to: ' + (screens.find(item => item._id === but.to).name)}>
-                  <Button variant="outline" fullWidth>
+                  <Button variant="outline" fullWidth
+                    onClick={() => {
+                      if(but.action === 'callback'){
+                        sendMeScreen(but.to)
+                      }
+                      
+                    }}>
                     {but.text}
                   </Button>
                 </Tooltip>

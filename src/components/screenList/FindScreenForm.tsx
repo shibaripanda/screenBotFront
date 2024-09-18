@@ -7,7 +7,7 @@ export function FindScreenForm({screenFilterLength, bot, screens, createScreen, 
     const navigate = useNavigate()
 
     const activButtonCreateScreen = () => {
-        if(newScreenName === '' || screens.map(item => item.name).includes(newScreenName)) return true
+        if(newScreenName === '' || screens.map(item => item.name.toLowerCase()).includes(newScreenName.toLowerCase())) return true
         return false
     }
 
