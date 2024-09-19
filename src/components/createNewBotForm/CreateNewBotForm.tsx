@@ -19,7 +19,7 @@ export function CreateNewBotForm({createBot}) {
     }
 
     return (
-        <Paper shadow="sm" p="xl">
+        <Paper withBorder p="lg" radius="md" shadow="md">
             <TextInput
             label={resStatus}
             description='Token from BotFather:'

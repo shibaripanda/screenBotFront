@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Group, Paper, Text, TextInput } from '@mantine/core'
+import { Button, Grid, Group, Paper, Text, TextInput } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
 
 export function FindScreenForm({screenFilterLength, bot, screens, createScreen, newScreenName, setNewScreenName, filterScreens, setFilterScreens}) {
@@ -11,32 +11,38 @@ export function FindScreenForm({screenFilterLength, bot, screens, createScreen, 
         return false
     }
 
-    return (
-        <Paper shadow="sm" p="xl">
+    const activButtonFilter = () => {
+        if(filterScreens === '') return true
+        return false
+    }
 
-            <Group>
+    return (
+        <Paper withBorder p="lg" radius="md" shadow="md">
+            <Group justify="space-between">
                 <Button variant="default" size="xs"
                     onClick={() => {
                     navigate(`/main`)
                     }}>
                     Back to all bots
                 </Button>
-                <Text>{bot.name + ' (@' + bot.username + ')'}</Text>
+                <Text fw={700}>{bot.name + ' (@' + bot.username + ')'}</Text>
             </Group>
 
-            <hr style={{marginBottom: '1vmax', marginTop: '1vmax'}}></hr>
+            <hr style={{marginBottom: '2vmax', marginTop: '1.2vmax'}}></hr>
 
-            <div style={{marginBottom: '1vmax', marginTop: '2vmax'}}>
-                <TextInput
-                    description='Create new screen'
-                    placeholder="new screen name"
-                    value={newScreenName}
-                    onChange={(event) => {
-                        setNewScreenName(event.currentTarget.value)
-                    }}
-                />
-                <div style={{marginTop: '1vmax'}}>
-                    <Button variant="default" size="xs"
+            <Grid justify="space-between" align="flex-end" grow>
+                <Grid.Col span={8} key={0}>
+                    <TextInput
+                        description='Create new screen'
+                        placeholder="new screen name"
+                        value={newScreenName}
+                        onChange={(event) => {
+                            setNewScreenName(event.currentTarget.value)
+                        }}
+                    />
+                </Grid.Col>
+                <Grid.Col span={4} key={1}>
+                    <Button variant="default" 
                         disabled={activButtonCreateScreen()}
                         onClick={() => {
                             createScreen(newScreenName)
@@ -44,21 +50,32 @@ export function FindScreenForm({screenFilterLength, bot, screens, createScreen, 
                             }}>
                         Create new screen
                     </Button>
-                    
-                </div>
-            </div>
+                </Grid.Col>
+            </Grid>
 
-            <hr style={{marginBottom: '2vmax', marginTop: '2vmax'}}></hr>
+            <hr style={{marginBottom: '2vmax', marginTop: '3vmax'}}></hr>
 
-            <TextInput
-                description='Find screen by name:'
-                placeholder="screen name"
-                value={filterScreens}
-                onChange={(event) => {
-                    setFilterScreens(event.currentTarget.value)
-                }}
-            />
-            <Text style={{marginTop: '0.3vmax', marginLeft: '0.5vmax'}} c="dimmed" fz="xs">{screenFilterLength} ({screens.length})</Text>
+            <Grid justify="space-between" align="flex-end" grow>
+                <Grid.Col span={8} key={0}>
+                    <TextInput
+                        description='Find screen by name:'
+                        placeholder="screen name"
+                        value={filterScreens}
+                        onChange={(event) => {
+                            setFilterScreens(event.currentTarget.value)
+                        }}
+                    />
+                </Grid.Col>
+                <Grid.Col span={4} key={1}>
+                    <Button variant="default"
+                        disabled={activButtonFilter()}
+                        onClick={() => {
+                            setFilterScreens('')
+                            }}>
+                        Reset filter ({screenFilterLength}/{screens.length})
+                    </Button>
+                </Grid.Col>
+            </Grid>
         </Paper>
     )
 

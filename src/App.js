@@ -11,16 +11,17 @@ import { BotEditPage } from './pages/BotEditPage'
 function App() {
 
   return (
-      <MantineProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<ConnectPage/>} />
-              <Route path="/main" element={<MainPage/>} />
-              <Route path="/botedit/:botId" element={<BotEditPage/>} />
-            </Routes>
-          </BrowserRouter>
-      </MantineProvider>
+    <MantineProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<ConnectPage/>} />
+            <Route path="/main" element={<MainPage/>} />
+            <Route path="/botedit/:botId" element={<BotEditPage/>} />
+          </Routes>
+        </BrowserRouter>
+    </MantineProvider>
   )
+  
 }
 
-export default App;
+export default App

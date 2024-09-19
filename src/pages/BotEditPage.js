@@ -80,39 +80,54 @@ export function BotEditPage() {
     SocketApt.socket.emit('sendMeScreen', {botId: bot._id, screenId: screenId})
   }
 
+  const loadingItem = () => {
+    if(screens.length){
+      return (
+        screenFilter.map((item, index) => 
+          <Grid.Col span={4} key={index}>
+            <ScreenItem
+              screens={screens}
+              protectScrreen={protectScrreen} 
+              editScreen={editScreen} 
+              bot={bot} 
+              screen={item} 
+              sendMeScreen={sendMeScreen} 
+              deleteScreen={deleteScreen}
+              clearScreen={clearScreen}
+              editButtons={editButtons}
+              updateVariable={updateVariable}
+              screenForAnswer={screenForAnswer} 
+            />
+          </Grid.Col>)
+      )
+    }
+    return (
+      <Grid.Col span={4} key={5000}>
+        <div style={{marginTop: '10vmax', marginLeft: '8vmax'}}>
+          Loading...
+        </div>
+      </Grid.Col>
+    )
+  }
+
   
   if(bot && screens && status){
     return (
       <div style={{width: '75vmax', marginTop: '3vmax', marginBottom: '3vmax'}}>
-        <FindScreenForm 
-          bot={bot} 
-          screens={screens}
-          screenFilterLength={screenFilter.length} 
-          createScreen={createScreen} 
-          newScreenName={newScreenName} 
-          setNewScreenName={setNewScreenName} 
-          filterScreens={filterScreens}
-          setFilterScreens={setFilterScreens}
-        />
-        <Grid>
-          {screenFilter.map((item, index) => 
-          <Grid.Col span={4} key={index}>
-            <div style={{marginTop: '1vmax'}}>
-              <ScreenItem
-                screens={screens}
-                protectScrreen={protectScrreen} 
-                editScreen={editScreen} 
-                bot={bot} 
-                screen={item} 
-                sendMeScreen={sendMeScreen} 
-                deleteScreen={deleteScreen}
-                clearScreen={clearScreen}
-                editButtons={editButtons}
-                updateVariable={updateVariable}
-                screenForAnswer={screenForAnswer} 
-              />
-            </div>
-          </Grid.Col>)}
+        <Grid justify="flex-start" align="stretch">
+          <Grid.Col span={8} key={1000}>
+            <FindScreenForm
+              bot={bot} 
+              screens={screens}
+              screenFilterLength={screenFilter.length} 
+              createScreen={createScreen} 
+              newScreenName={newScreenName} 
+              setNewScreenName={setNewScreenName} 
+              filterScreens={filterScreens}
+              setFilterScreens={setFilterScreens}
+            />
+          </Grid.Col>
+          {loadingItem()}
         </Grid>
       </div>
     )

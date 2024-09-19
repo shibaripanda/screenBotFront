@@ -70,7 +70,7 @@ export function ScreenItem({screenForAnswer, updateVariable, screens, editButton
         Activ links to this screen: {usedCount()}
       </Text>
       <Text c="dimmed" fz="xs">
-        Text: {screen.text.substring(0, 25)}...
+        Text: {screen.text.substring(0, 20)}...
       </Text>
       <Text c="dimmed" fz="xs">
         Media: {screen.media.length}
@@ -112,6 +112,12 @@ export function ScreenItem({screenForAnswer, updateVariable, screens, editButton
           updateVariable={updateVariable}
           screenForAnswer={screenForAnswer}
         />
+        <Button variant="default" size="xs"
+          onClick={() => {
+            // sendMeScreen(screen._id)
+          }}>
+          Copy
+        </Button>
       </Group>
       {startScreen()}
       {deleteBut()}
