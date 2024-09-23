@@ -1,27 +1,38 @@
 
 import '@mantine/core/styles.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import '../styles/App.css'
 import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
 import { SocketApt } from '../socket/api/socket-api.ts'
 import { fix } from '../fix/fix.js'
-import { useParams } from 'react-router-dom'
-import { Table } from '@mantine/core'
+import { useNavigate, useParams } from 'react-router-dom'
+import { Button, Group, Switch, Text, TextInput } from '@mantine/core'
 import { UserList } from '../components/userList/UserList.tsx'
 
 export function MonitPage() {
-
-  const {botId} = useParams()
-
+  
   useConnectSocket()
-
-  const [status, setStatus] = useState(false)
-  const [users, setUsers] = useState(false)
 
   SocketApt.socket?.on('getUsers', (data) => {
     console.log(data)
     setUsers(data)
   })
+  
+  const {botId} = useParams()
+  const navigate = useNavigate()
+  const [checked, setChecked] = useState(false)
+  const [filter, setFilter] = useState('')
+  const [status, setStatus] = useState(false)
+  const [users, setUsers] = useState([])
+
+  const usersFilter = useMemo(() => {
+      const checkActiv = () => {
+        if(checked) return [true]
+        return [true, false]
+      }
+      return users.filter(item => (Object.values(item.data).join() + item.username + item._id).toLowerCase().includes(filter.toLowerCase()) && checkActiv().includes(item.activBot))
+    }, [filter, users, checked]
+  )
 
   useEffect(() => {
     if(!sessionStorage.getItem('token')){
@@ -40,8 +51,35 @@ export function MonitPage() {
 
   if(users && status){
     return (
-      <div style={{width: '55vmax', marginTop: '3vmax', marginBottom: '3vmax'}}>
-          <UserList data={users}/>
+      <div style={{width: '100%', marginTop: '0.5vmax', marginBottom: '3vmax', marginLeft: '0.5vmax', marginRight: '0.5vmax'}}>
+        <Group justify="space-between">
+          <Button variant="default" size="xs"
+            onClick={() => {
+            navigate(`/main`)
+            }}>
+            Back to all bots
+          </Button>
+          <Switch
+            style={{marginTop: '1.5vmax', marginBottom: '1.5vmax'}}
+            label="Only active users"
+            radius="lg"
+            color='green'
+            checked={checked}
+            onChange={(event) => {
+              setChecked(event.currentTarget.checked)
+            }}/>
+          <TextInput
+              placeholder="filter"
+              value={filter}
+              onChange={(event) => {
+                setFilter(event.currentTarget.value)
+              }}
+          />
+          <Text>{usersFilter.length} / {users.length}</Text>
+        </Group>
+        <hr></hr>
+        
+        <UserList data={usersFilter}/>
       </div>
     )
   }
