@@ -17,6 +17,10 @@ export function MonitPage() {
     console.log(data)
     setUsers(data)
   })
+  SocketApt.socket?.on('getScreens', async (data) => {
+    getScreens(await data.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
+    console.log('recieve screens')
+  })
   
   const {botId} = useParams()
   const navigate = useNavigate()
@@ -24,6 +28,7 @@ export function MonitPage() {
   const [filter, setFilter] = useState('')
   const [status, setStatus] = useState(false)
   const [users, setUsers] = useState([])
+  const [screens, getScreens] = useState([])
 
   const usersFilter = useMemo(() => {
       const checkActiv = () => {
@@ -40,15 +45,22 @@ export function MonitPage() {
     }
     else{
       SocketApt.socket.emit('getUsers', botId)
+      SocketApt.socket.emit('getScreens', botId)
       setStatus(true)
     }
   }, [botId])
 
-  // const deleteBot = (_id) => {
-  //   SocketApt.socket.emit('deleteBot', _id)
-  // }
+  const sendScreenToUser = (screenId, userId) => {
+    console.log(screenId, userId)
+    SocketApt.socket.emit('sendScreenToUser', {botId: botId, screenId: screenId, to: userId})
+  }
 
+  const sendTextToUser = (text, userId) => {
+    console.log(text, userId)
+    SocketApt.socket.emit('sendTextToUser', {botId: botId, text: text, to: userId})
+  }
 
+ 
   if(users && status){
     return (
       <div style={{width: '100%', marginTop: '0.5vmax', marginBottom: '3vmax', marginLeft: '0.5vmax', marginRight: '0.5vmax'}}>
@@ -79,7 +91,7 @@ export function MonitPage() {
         </Group>
         <hr></hr>
         
-        <UserList data={usersFilter}/>
+        <UserList data={usersFilter} screens={screens} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser}/>
       </div>
     )
   }

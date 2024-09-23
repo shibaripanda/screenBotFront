@@ -95,7 +95,7 @@ export function ScreenItem({copyScreen, screenForAnswer, updateVariable, screens
                 {`Edit screen for ${bot.name} (${screen.name})`}
               </div>
               <div style={{marginTop: '1vmax'}}>
-              ❗️⚠️❗️⚠️❗️⚠️❗️⚠️❗️⚠️❗️⚠️❗️⚠️❗️⚠️❗️⚠️
+              ❗️⚠️❗️
               </div>
               <div style={{marginTop: '1vmax'}}>
                 Content sent to the bot will be added to this screen
