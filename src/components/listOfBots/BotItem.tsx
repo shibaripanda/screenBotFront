@@ -53,13 +53,16 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
         Status: {botStatus(bot.status)}
       </Text>
       <Group justify="flex-end" mt="md">
-        {/* <Button variant="default" size="xs">
-          Monitor
-        </Button> */}
         <Button variant="default" size="xs"
-        onClick={() => {
-          navigate(`/botedit/${bot._id}`)
-        }}>
+          onClick={() => {
+            navigate(`/monit/${bot._id}`)
+          }}>
+          Monitor
+        </Button>
+        <Button variant="default" size="xs"
+          onClick={() => {
+            navigate(`/botedit/${bot._id}`)
+          }}>
           Edit
         </Button>
         {onOffButton()}

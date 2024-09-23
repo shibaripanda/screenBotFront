@@ -57,6 +57,9 @@ export function BotEditPage() {
   const clearScreen = async (screenId) => {
     SocketApt.socket.emit('clearScreen', {botId: bot._id, screenId: screenId})
   }
+  const copyScreen = async (screenId) => {
+    SocketApt.socket.emit('copyScreen', {botId: bot._id, screenId: screenId})
+  }
   const deleteScreen = async (screenId) => {
     SocketApt.socket.emit('deleteScreen', screenId)
     getScreens(screens.filter(item => item._id !== screenId))
@@ -96,7 +99,8 @@ export function BotEditPage() {
               clearScreen={clearScreen}
               editButtons={editButtons}
               updateVariable={updateVariable}
-              screenForAnswer={screenForAnswer} 
+              screenForAnswer={screenForAnswer}
+              copyScreen={copyScreen} 
             />
           </Grid.Col>)
       )
