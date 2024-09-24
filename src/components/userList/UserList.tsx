@@ -6,7 +6,7 @@ export const UserList = ({data, screens, sendScreenToUser, sendTextToUser}) => {
 
     const rowsList = Array.from(new Set((data.map(item => Object.keys(item.data))).flat(1)))
 
-    const status = (status) => {
+    const status = (status: boolean) => {
         if(status) return 'Active ✅'
         return 'Stoped by user ❌'
     }
@@ -23,23 +23,29 @@ export const UserList = ({data, screens, sendScreenToUser, sendTextToUser}) => {
         )
     }
 
+    
     const currentScreen = (screen) => {
-      const res = screens.filter(item => item._id.toString() === screen)
-      console.log(res.name)
-      return 'ddf'
+      const res = screens[screens.findIndex(item => item._id.toString() === screen)]
+      if(res){
+        return res.name + ' ' + (res['variable'] ? '(<$>' + res['variable'] + '<$>)' : '')
+      }
+      else{
+        return 'empty'
+      }
     }
 
     const rows = data.map((element, index) => (
       
-        <Table.Tr key={index}>
-          <Table.Td>{element._id}</Table.Td>
-          <Table.Td>@{element.username}</Table.Td>
-          {list(rowsList, element)}
-          <Table.Td>{currentScreen(element.screen)}</Table.Td>
-          <Table.Td>{status(element.activBot)}</Table.Td>
-          <Table.Td><ModalSendMessage screens={screens} activ={element.activBot} username={element.username} userId={element.id} user={element._id} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser}/></Table.Td>
-        </Table.Tr>
-      ))
+      <Table.Tr key={index}>
+        <Table.Td>{element._id}</Table.Td>
+        <Table.Td>@{element.username}</Table.Td>
+        {list(rowsList, element)}
+        <Table.Td>{currentScreen(element.screen)}</Table.Td>
+        <Table.Td>{status(element.activBot)}</Table.Td>
+        <Table.Td><ModalSendMessage screens={screens} activ={element.activBot} username={element.username} userId={element.id} user={element._id} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser}/></Table.Td>
+      </Table.Tr>
+      
+    ))
     
       return (
         <Table>
@@ -56,5 +62,5 @@ export const UserList = ({data, screens, sendScreenToUser, sendTextToUser}) => {
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
       )
-
+    
 }

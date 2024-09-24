@@ -30,7 +30,6 @@ export function BotEditPage() {
     console.log('recieve screens')
   })
 
-
   useEffect(() => {
     if(!sessionStorage.getItem('token')){
       window.location.assign(fix.appLink)
@@ -67,6 +66,9 @@ export function BotEditPage() {
   const editButtons = async (screenId, buttons) => {
     SocketApt.socket.emit('editButtons', {botId: bot._id, screenId: screenId, buttons: buttons})
   }
+  const editScreenName = async (screenId, name) => {
+    SocketApt.socket.emit('editScreenName', {botId: bot._id, screenId: screenId, name: name})
+  }
   const createScreen = async (newScreenName) => {
     SocketApt.socket.emit('createNewScreen', {botId: bot._id, screenName: newScreenName})
   }
@@ -81,6 +83,9 @@ export function BotEditPage() {
   }
   const sendMeScreen = (screenId) => {
     SocketApt.socket.emit('sendMeScreen', {botId: bot._id, screenId: screenId})
+  }
+  const deleteContentItem = async (screenId, content, index) => {
+    SocketApt.socket.emit('deleteContentItem', {botId: bot._id, screenId: screenId, content: content, index: index})
   }
 
   const loadingItem = () => {
@@ -100,7 +105,9 @@ export function BotEditPage() {
               editButtons={editButtons}
               updateVariable={updateVariable}
               screenForAnswer={screenForAnswer}
-              copyScreen={copyScreen} 
+              copyScreen={copyScreen}
+              editScreenName={editScreenName}
+              deleteContentItem={deleteContentItem} 
             />
           </Grid.Col>)
       )

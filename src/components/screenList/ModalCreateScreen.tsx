@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useDisclosure } from '@mantine/hooks'
 import { Modal, Button, Text, Group, Switch, Grid, Spoiler, Tooltip, TextInput, Autocomplete } from '@mantine/core'
 
-export function ModalCreateScreen({screenForAnswer, updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, modalTitle, screen, sendMeScreen}) {
+export function ModalCreateScreen({deleteContentItem, editScreenName, screenForAnswer, updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, modalTitle, screen, sendMeScreen}) {
 
   const [opened, { open, close }] = useDisclosure(false)
   const [checked, setChecked] = useState(screen.protect)
@@ -13,6 +13,8 @@ export function ModalCreateScreen({screenForAnswer, updateVariable, screens, edi
   const [controlCheck, setControlCheck] = useState(true)
   const [variable, setVariable] = useState('')
   const [screenIfAnswer, setScreenIfAnswer] = useState('')
+  const [screenName, setScreenName] = useState(screen.name)
+  const [modeEditName, setModeEditName] = useState(false)
 
   const addOrDeleteButton = (but: object, obj: any) => {
     if(but['to'] === 'addNewBut'){
@@ -75,7 +77,7 @@ export function ModalCreateScreen({screenForAnswer, updateVariable, screens, edi
           data={screens.map(item => item.name + ' ' + item._id)}
           value={screenIfAnswer}
           onChange={(event) => {
-              // setScreenIfAnswer(event)
+              setScreenIfAnswer(event)
               console.log(event.split(' ')[event.split(' ').length - 1])
               screenForAnswer(screen._id, event.split(' ')[event.split(' ').length - 1])
             }
@@ -252,6 +254,76 @@ export function ModalCreateScreen({screenForAnswer, updateVariable, screens, edi
     )
   }
 
+  const nameForEditScreen = () => {
+    return screens.find(item => item.name.toLowerCase() === screenName.toLowerCase())
+  }
+
+  const blockEditStartScreen = () => {
+    if(screen.name === 'Start screen') return true
+    return false
+  }
+
+  const editNameScreen = () => {
+    if(!modeEditName){
+      return (
+        <Group justify="space-between" mt="md" grow>
+          <Text fz="xl">{screen.name}</Text>
+          <div>
+            <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
+              disabled={blockEditStartScreen()}
+              onClick={() => {
+                setModeEditName(true)
+              }}>
+              Edit name
+            </Button>
+            <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
+              onClick={() => {
+                sendMeScreen(screen._id)
+              }}>
+              Send me
+            </Button>
+            <Button style={{marginLeft: '1vmax'}} color='red' size="xs"
+              onClick={() => {
+                clearScreen(screen._id)
+                setButtons([])
+              }}>
+              Clear screen
+            </Button>
+          </div>
+        </Group>
+      )
+    }
+    return (
+      <Group justify="space-between" mt="md" grow>
+        <TextInput
+          size="xs"
+          placeholder={screen.name}
+          value={screenName}
+          onChange={(event) => {
+            setScreenName(event.currentTarget.value)
+          }}
+        />
+        <div>
+          <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
+            disabled={nameForEditScreen()}
+            onClick={() => {
+              editScreenName(screen._id, screenName)
+              setModeEditName(false)
+            }}>
+            Save new name
+          </Button>
+          <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
+              onClick={() => {
+                setModeEditName(false)
+              }}>
+            Cancel
+          </Button>
+        </div>
+      </Group>
+    )
+
+  }
+
   return (
     <>
       <Modal size={'xl'} opened={opened} 
@@ -261,24 +333,9 @@ export function ModalCreateScreen({screenForAnswer, updateVariable, screens, edi
             }} 
         title={modalTitle}
       >
-        <Group justify="space-between" mt="md">
-          <Text fz="xl">{screen.name}</Text>
-          <div>
-            <Button style={{marginLeft: '1vmax'}} color='red' size="xs"
-              onClick={() => {
-                clearScreen(screen._id)
-                setButtons([])
-              }}>
-              Clear
-            </Button>
-            <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
-              onClick={() => {
-                sendMeScreen(screen._id)
-              }}>
-              Send me
-            </Button>
-          </div>
-        </Group>
+        {/* <Group justify="space-between" mt="md" grow> */}
+          {editNameScreen()}
+        {/* </Group> */}
 
         <hr style={{marginTop: '0.7vmax', marginBottom: '1.3vmax'}}></hr>
 
@@ -298,10 +355,10 @@ export function ModalCreateScreen({screenForAnswer, updateVariable, screens, edi
           <tr>
             <td><Text c="dimmed" fz="xl">Media: </Text></td>
             <td>{screen.media.map((item, index) =>
-              <Tooltip label={item.tx} key={index}> 
+              <Tooltip label={item.tx ? item.tx + ' delete' : 'no name delete'} key={index}> 
                 <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
                   onClick={() => {
-                    sendMeScreen(screen._id)
+                    deleteContentItem(screen._id, 'media', item)
                   }}>
                   '🖼'
                 </Button>
@@ -311,10 +368,10 @@ export function ModalCreateScreen({screenForAnswer, updateVariable, screens, edi
           <tr>
             <td><Text c="dimmed" fz="xl">Documents: </Text></td>
             <td>{screen.document.map((item, index) =>
-              <Tooltip label={item.tx} key={index}>
+              <Tooltip label={item.tx ? item.tx : 'no name'} key={index}>
                 <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
                     onClick={() => {
-                      sendMeScreen(screen._id)
+                      deleteContentItem(screen._id, 'document', item)
                     }}>
                     '🗂'
                 </Button>
@@ -324,10 +381,10 @@ export function ModalCreateScreen({screenForAnswer, updateVariable, screens, edi
           <tr>
             <td><Text c="dimmed" fz="xl">Audio: </Text></td>
             <td>{screen.audio.map((item, index) => 
-              <Tooltip label={item.tx} key={index}>
+              <Tooltip label={item.tx ? item.tx : 'no name'} key={index}>
                 <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
                     onClick={() => {
-                      sendMeScreen(screen._id)
+                      deleteContentItem(screen._id, 'audio', item)
                     }}>
                     '🎼'
                 </Button>

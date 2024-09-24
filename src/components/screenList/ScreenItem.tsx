@@ -2,7 +2,7 @@ import { Button, Paper, Text, Group, TextInput } from '@mantine/core';
 import React, { useState } from 'react'
 import { ModalCreateScreen } from './ModalCreateScreen.tsx'
 
-export function ScreenItem({copyScreen, screenForAnswer, updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, bot, screen, deleteScreen, sendMeScreen}) {
+export function ScreenItem({deleteContentItem, editScreenName, copyScreen, screenForAnswer, updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, bot, screen, deleteScreen, sendMeScreen}) {
 
   const [deleteValue, setDeleteValue] = useState('')
 
@@ -90,17 +90,9 @@ export function ScreenItem({copyScreen, screenForAnswer, updateVariable, screens
         </Button>
         <ModalCreateScreen 
           modalTitle={
-            <>
-              <div>
-                {`Edit screen for ${bot.name} (${screen.name})`}
-              </div>
-              <div style={{marginTop: '1vmax'}}>
-              ❗️⚠️❗️
-              </div>
-              <div style={{marginTop: '1vmax'}}>
-                Content sent to the bot will be added to this screen
-              </div>
-            </>
+            <Text c="dimmed" fz="md">
+              {`❗️⚠️ Content your sent to the ${bot.name} will be added to this screen ⚠️❗️`}
+            </Text>
           } 
           screen={screen}
           editScreen={editScreen} 
@@ -111,6 +103,8 @@ export function ScreenItem({copyScreen, screenForAnswer, updateVariable, screens
           screens={screens}
           updateVariable={updateVariable}
           screenForAnswer={screenForAnswer}
+          editScreenName={editScreenName}
+          deleteContentItem={deleteContentItem}
         />
         <Button variant="default" size="xs"
           onClick={() => {

@@ -61,7 +61,7 @@ export function MonitPage() {
   }
 
  
-  if(users && status){
+  if(users && status && screens.length){
     return (
       <div style={{width: '100%', marginTop: '0.5vmax', marginBottom: '3vmax', marginLeft: '0.5vmax', marginRight: '0.5vmax'}}>
         <Group justify="space-between">
