@@ -12,7 +12,7 @@ export function ScreenItem({deleteContentItem, editScreenName, copyScreen, scree
   }
 
   const startScreen = () => {
-    if(screen.name !== 'Start screen'){
+    if(!['Start screen', 'Error screen'].includes(screen.name)){
       return (
         <Group justify="flex-end" mt="md" grow>
           <TextInput

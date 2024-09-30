@@ -8,7 +8,7 @@ export function TelegramVidget() {
     return (
         <div>
             <LoginButton
-                botUsername='Testxf_Bot'
+                botUsername={fix.botName}
                 onAuthCallback={async (data) => {
                     return await axios({
                       method: 'POST',

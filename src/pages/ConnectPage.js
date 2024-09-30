@@ -1,7 +1,7 @@
 import '@mantine/core/styles.css'
 import { useEffect } from 'react'
 import '../styles/App.css'
-import { TelegramVidget } from '../modules/TelegramVidget'
+import { HelloScreen } from '../components/helloscreen/HelloScreen.tsx'
 
 export function ConnectPage() {
 
@@ -10,11 +10,8 @@ export function ConnectPage() {
   }, [])
 
   return (
-    <div style={{marginTop: '20vmax'}}>
-      <div style={{marginBottom: '5vmax'}}>
-        Редактор Telegram бота
-      </div>
-      <TelegramVidget/>
+    <div style={{marginTop: '10vmax'}}>
+      <HelloScreen/>
     </div>
   )
 
