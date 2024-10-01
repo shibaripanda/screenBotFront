@@ -12,14 +12,29 @@ export const UserList = ({data, screens, sendScreenToUser, sendTextToUser}) => {
     }
 
     const top = (data) => {
+
+      const itemTop = (item, index) => {
+        if(item === 'startTime'){
+          return <Table.Th key={index}>{item}</Table.Th>
+        }
+        return <Table.Th key={index}>{'<$>'}{item}{'<$>'}</Table.Th>
+      }
+      
         return (
-            data.map((item, index) => <Table.Th key={index}>{'<$>'}{item}{'<$>'}</Table.Th>)
+            data.map((item, index) => itemTop(item, index))
         )
+    }
+
+    const tableItem = (item, index, element) => {
+      if(item === 'startTime'){
+        return <Table.Td key={index}>{element.data[item] ? new Date(element.data[item]).toLocaleDateString() : ''}</Table.Td>
+      }
+      return <Table.Td key={index}>{element.data[item] ? element.data[item] : ''}</Table.Td>
     }
 
     const list = (data, element) => {
         return (
-            data.map((item, index) => <Table.Td key={index}>{element.data[item] ? element.data[item] : ''}</Table.Td>)
+            data.map((item, index) => tableItem(item, index, element))
         )
     }
 
