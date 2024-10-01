@@ -18,7 +18,7 @@ function App() {
             <Route path="/" element={<ConnectPage/>} />
             <Route path="/main" element={<MainPage/>} />
             <Route path="/botedit/:botId" element={<BotEditPage/>} />
-            <Route path="/monit/:botId" element={<MonitPage/>} />
+            <Route path="/monit/:botId/:botName" element={<MonitPage/>} />
           </Routes>
         </BrowserRouter>
     </MantineProvider>

@@ -10,7 +10,7 @@ export function HelloScreen() {
       <div className={classes.inner}>
         <div className={classes.content}>
           <Title className={classes.title}>
-            A <span className={classes.highlight}>Simple</span> Telegram Bot <br /> constructor app
+            A <span className={classes.highlight}>Simple</span> Telegram Bot <br /> Constructor App
           </Title>
           <Text c="dimmed" mt="md">
           Create your own telegram bot quickly and with huge possibilities

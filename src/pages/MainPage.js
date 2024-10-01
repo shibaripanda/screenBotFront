@@ -32,15 +32,12 @@ export function MainPage() {
   const deleteBot = (_id) => {
     SocketApt.socket.emit('deleteBot', _id)
   }
-
   const createBot = (token) => {
     SocketApt.socket.emit('createNewBot', token)
   }
-
   const offBot = (_id) => {
     SocketApt.socket.emit('offBot', _id)
   }
-
   const onBot = (_id) => {
     SocketApt.socket.emit('onBot', _id)
   }

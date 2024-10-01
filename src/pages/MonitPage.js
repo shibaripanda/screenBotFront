@@ -23,6 +23,8 @@ export function MonitPage() {
   })
   
   const {botId} = useParams()
+  const {botName} = useParams()
+
   const navigate = useNavigate()
   const [checked, setChecked] = useState(false)
   const [filter, setFilter] = useState('')
@@ -71,6 +73,7 @@ export function MonitPage() {
             }}>
             Back to all bots
           </Button>
+          <Text fw={700} fz="md">{botName}</Text>
           <Switch
             style={{marginTop: '1.5vmax', marginBottom: '1.5vmax'}}
             label="Only active users"

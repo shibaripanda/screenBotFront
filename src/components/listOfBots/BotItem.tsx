@@ -55,7 +55,7 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
       <Group justify="flex-end" mt="md">
         <Button variant="default" size="xs"
           onClick={() => {
-            navigate(`/monit/${bot._id}`)
+            navigate(`/monit/${bot._id}/${bot.name} (@${bot.username})`)
           }}>
           Monitor
         </Button>
