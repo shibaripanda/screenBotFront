@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDisclosure } from '@mantine/hooks'
-import { Modal, Button, Text, Group, Switch, Grid, Spoiler, Tooltip, TextInput, Autocomplete } from '@mantine/core'
+import { Modal, Button, Text, Group, Switch, Grid, Spoiler, Tooltip, TextInput, Autocomplete, Image } from '@mantine/core'
 
 export function ModalCreateScreen({deleteContentItem, editScreenName, screenForAnswer, updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, modalTitle, screen, sendMeScreen}) {
 
@@ -43,13 +43,13 @@ export function ModalCreateScreen({deleteContentItem, editScreenName, screenForA
   const textSize = () => {
     if(screen.text && screen.text.length > 200){
       return (
-        <Spoiler maxHeight={30} showLabel="Show more" hideLabel="Hide"><Text c="dimmed" fz="xl">
+        <Spoiler maxHeight={30} showLabel="Show more" hideLabel="Hide"><Text c="dimmed" fz="md">
           Text: {screen.text}
         </Text></Spoiler>
       )
     }
     return (
-      <Text c="dimmed" fz="xl">
+      <Text c="dimmed" fz="md">
           Text: {screen.text}
       </Text>
     )
@@ -324,18 +324,60 @@ export function ModalCreateScreen({deleteContentItem, editScreenName, screenForA
 
   }
 
+  const imageOrVide = (item) => {
+    if(item.type === 'video'){
+      return (
+        <Button 
+          variant="default" 
+          // size="xs"
+          h='4.5vmax'
+          onClick={() => {
+            deleteContentItem(screen._id, 'media', item)
+          }}>
+            video
+        </Button>
+      )
+    }
+    else{
+      if(item.buffer){
+        return (
+          <Image
+            src={`data:image/jpeg;base64,${item.buffer}`}
+            radius="sm"
+            h='4.5vmax'
+            w="auto"
+            onClick={() => {
+              deleteContentItem(screen._id, 'media', item)
+            }} 
+          />
+        )
+      }
+      return (
+        <Button 
+          variant="default" 
+          w='auto'
+          h='4.5vmax'
+          onClick={() => {
+            deleteContentItem(screen._id, 'media', item)
+          }}>
+            photo
+        </Button>
+      )
+    }
+    
+    
+  }
+
   return (
     <>
-      <Modal size={'xl'} opened={opened} 
+      <Modal size={'65vmax'} opened={opened} 
         onClose={() => {
             editScreen('')
             setTimeout(() => {close()}, )
             }} 
         title={modalTitle}
       >
-        {/* <Group justify="space-between" mt="md" grow> */}
           {editNameScreen()}
-        {/* </Group> */}
 
         <hr style={{marginTop: '0.7vmax', marginBottom: '1.3vmax'}}></hr>
 
@@ -353,48 +395,91 @@ export function ModalCreateScreen({deleteContentItem, editScreenName, screenForA
         <table>
         <tbody>
           <tr>
-            <td><Text c="dimmed" fz="xl">Media: </Text></td>
-            <td>{screen.media.map((item, index) =>
-              <Tooltip label={item.tx ? item.tx + ' delete' : 'no name delete'} key={index}> 
-                <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
+            <td>
+              <Text c="dimmed" fz="md">
+                Media{'\n'}(10max) 
+                </Text> 
+                <Button 
+                  variant="default" 
+                  size="xs"
                   onClick={() => {
-                    deleteContentItem(screen._id, 'media', item)
                   }}>
-                  '🖼'
+                    Add existing
                 </Button>
-              </Tooltip>)}
+                <hr style={{marginTop: '0.5vmax'}}></hr></td>
+            <td>
+              <Group gap="xs" style={{marginLeft: '1vmax'}} >
+                  {screen.media.map((item, index) =>
+                  <Tooltip label={item.tx ? item.tx + ' delete' : 'noname delete'} key={index}>
+                    {imageOrVide(item)}
+                </Tooltip>)}
+              </Group>
             </td>
           </tr>
           <tr>
-            <td><Text c="dimmed" fz="xl">Documents: </Text></td>
-            <td>{screen.document.map((item, index) =>
-              <Tooltip label={item.tx ? item.tx : 'no name'} key={index}>
-                <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
+            <td><Text c="dimmed" fz="md">
+              Documents{'\n'}(10max) 
+              </Text>
+              <Button 
+                  variant="default" 
+                  size="xs"
+                  onClick={() => {
+                  }}>
+                    Add existing
+                </Button>
+                <hr style={{marginTop: '0.5vmax'}}></hr></td>
+            <td>
+            <Group gap="xs" style={{marginLeft: '1vmax'}} >
+              {screen.document.map((item, index) =>
+              <Tooltip label={item.tx ? item.tx + ' delete' : 'noname delete'} key={index}>
+                <Button variant="default" h='4.5vmax' w='auto'
                     onClick={() => {
                       deleteContentItem(screen._id, 'document', item)
                     }}>
-                    '🗂'
+                    file
                 </Button>
               </Tooltip> )}
+              </Group>
             </td>
           </tr>
           <tr>
-            <td><Text c="dimmed" fz="xl">Audio: </Text></td>
-            <td>{screen.audio.map((item, index) => 
-              <Tooltip label={item.tx ? item.tx : 'no name'} key={index}>
-                <Button style={{marginLeft: '1vmax'}} variant="default" size="xs"
+            <td><Text c="dimmed" fz="md">
+              Audio{'\n'}(10max) 
+              </Text>
+              <Button 
+                  variant="default" 
+                  size="xs"
+                  onClick={() => {
+                  }}>
+                    Add existing
+                </Button>
+                <hr style={{marginTop: '0.5vmax'}}></hr></td>
+            <td>
+            <Group gap="xs" style={{marginLeft: '1vmax'}} >
+              {screen.audio.map((item, index) => 
+              <Tooltip label={item.tx ? item.tx + ' delete' : 'noname delete'} key={index}>
+                <Button variant="default" h='4.5vmax' w='auto'
                     onClick={() => {
                       deleteContentItem(screen._id, 'audio', item)
                     }}>
-                    '🎼'
+                    audio
                 </Button>
               </Tooltip>)}
+              </Group>
             </td>
           </tr>
         </tbody>
         </table>
 
         {textSize()}
+        <Button 
+          variant="default" 
+          size="xs"
+          onClick={() => {
+          }}>
+            Set existing
+        </Button>
+        <hr style={{marginTop: '0.5vmax'}}></hr>
 
         <div style={{marginTop: '3vmax'}} >
           <TextInput
