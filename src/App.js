@@ -8,6 +8,7 @@ import { ConnectPage } from './pages/ConnectPage'
 import { MainPage } from './pages/MainPage'
 import { BotEditPage } from './pages/BotEditPage'
 import { MonitPage } from './pages/MonitPage'
+import { ContentPage } from './pages/ContentPage'
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
             <Route path="/main" element={<MainPage/>} />
             <Route path="/botedit/:botId" element={<BotEditPage/>} />
             <Route path="/monit/:botId/:botName" element={<MonitPage/>} />
+            <Route path="/content/:botId/:botName" element={<ContentPage/>} />
           </Routes>
         </BrowserRouter>
     </MantineProvider>

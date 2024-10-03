@@ -397,7 +397,7 @@ export function ModalCreateScreen({deleteContentItem, editScreenName, screenForA
           <tr>
             <td>
               <Text c="dimmed" fz="md">
-                Media{'\n'}(10max) 
+                Media: 
                 </Text> 
                 <Button 
                   variant="default" 
@@ -418,7 +418,7 @@ export function ModalCreateScreen({deleteContentItem, editScreenName, screenForA
           </tr>
           <tr>
             <td><Text c="dimmed" fz="md">
-              Documents{'\n'}(10max) 
+              Documents:
               </Text>
               <Button 
                   variant="default" 
@@ -444,7 +444,7 @@ export function ModalCreateScreen({deleteContentItem, editScreenName, screenForA
           </tr>
           <tr>
             <td><Text c="dimmed" fz="md">
-              Audio{'\n'}(10max) 
+              Audio:
               </Text>
               <Button 
                   variant="default" 

@@ -61,6 +61,12 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
         </Button>
         <Button variant="default" size="xs"
           onClick={() => {
+            navigate(`/content/${bot._id}/${bot.name} (@${bot.username})`)
+          }}>
+          Content
+        </Button>
+        <Button variant="default" size="xs"
+          onClick={() => {
             navigate(`/botedit/${bot._id}`)
           }}>
           Edit
