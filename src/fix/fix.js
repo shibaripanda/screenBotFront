@@ -1,6 +1,6 @@
 export const fix = {
 
-    appLink: 'http://localhost:3000',
+    appLink: 'https://shibaripanda.serveo.net',
     serverLink: 'http://localhost:5002',
     serverAuthLink: 'ws://localhost:5002',
     botName: 'irentbot'

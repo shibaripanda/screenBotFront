@@ -7,7 +7,7 @@ import { SocketApt } from '../socket/api/socket-api.ts'
 import { fix } from '../fix/fix.js'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Group, Switch, Text, TextInput } from '@mantine/core'
-import { UserList } from '../components/userList/UserList.tsx'
+import { UserList } from '../components/monitor/UserList.tsx'
 
 export function MonitPage() {
   
@@ -48,6 +48,7 @@ export function MonitPage() {
     else{
       SocketApt.socket.emit('getUsers', botId)
       SocketApt.socket.emit('getScreens', botId)
+      SocketApt.socket.emit('idForEditScreen', {botId: botId, screenId: ''})
       setStatus(true)
     }
   }, [botId])
@@ -73,7 +74,7 @@ export function MonitPage() {
             }}>
             Back to all bots
           </Button>
-          <Text fw={700} fz="md">{botName}</Text>
+          <Text fw={700} fz="md">Users: {botName}</Text>
           <Switch
             style={{marginTop: '1.5vmax', marginBottom: '1.5vmax'}}
             label="Only active users"

@@ -8,14 +8,18 @@ import { fix } from '../fix/fix.js'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Group, Switch, Text, TextInput } from '@mantine/core'
 import { ContentList } from '../components/content/ContentList.tsx'
+import { ModalAddMode } from '../components/content/ModalAddMode.tsx'
 
 export function ContentPage() {
   
   useConnectSocket()
 
   SocketApt.socket?.on('getContent', (data) => {
-    console.log(data.reverse())
     setContent(data)
+  })
+  SocketApt.socket?.on('getAddContentMode', (data) => {
+    console.log(data)
+    setAddContentMode(data)
   })
   
   const {botId} = useParams()
@@ -26,6 +30,7 @@ export function ContentPage() {
   const [filter, setFilter] = useState('')
   const [status, setStatus] = useState(false)
   const [content, setContent] = useState([])
+  const [addContentmode, setAddContentMode] = useState('check')
 
   const contentFilter = useMemo(() => {
       return content.filter(item => (Object.values(item).join()).toLowerCase().includes(filter.toLowerCase()))
@@ -37,20 +42,53 @@ export function ContentPage() {
       window.location.assign(fix.appLink)
     }
     else{
+      // SocketApt.socket.emit('idForEditScreen', {botId: botId, screenId: ''})
       SocketApt.socket.emit('getContent', botId)
+      SocketApt.socket.emit('getAddContentMode', botId)
+
       setStatus(true)
     }
   }, [botId])
 
-  // const sendScreenToUser = (screenId, userId) => {
-  //   console.log(screenId, userId)
-  //   SocketApt.socket.emit('sendScreenToUser', {botId: botId, screenId: screenId, to: userId})
-  // }
+  const addContent = (status) => {
+    SocketApt.socket.emit('idForEditScreen', {botId: botId, screenId: status})
+  }
 
-  // const sendTextToUser = (text, userId) => {
-  //   console.log(text, userId)
-  //   SocketApt.socket.emit('sendTextToUser', {botId: botId, text: text, to: userId})
-  // }
+  const deleteContent = (item) => {
+    SocketApt.socket.emit('deleteContent', {botId: botId, content: item})
+  }
+
+  const sendMeContent = (item) => {
+    SocketApt.socket.emit('sendMeContent', {botId: botId, content: item})
+  }
+
+  const renameMeContent = (item, newName) => {
+    SocketApt.socket.emit('renameMeContent', {botId: botId, content: item, newName: newName})
+  }
+
+  const addContentButtonStatus = () => {
+    if(addContentmode === 'check'){
+      return (
+        <></>
+      )
+    }
+    else if(!addContentmode){
+      return (
+        <ModalAddMode addContent={addContent} setAddContentMode={setAddContentMode}/>
+      )
+    }
+    return (
+      <Button
+        color='red' 
+        size="xs"
+        onClick={() => {
+          addContent('')
+          setAddContentMode(false)
+        }}>
+        Stop Add-content mode
+      </Button>
+    )
+  }
 
  
   if(status){
@@ -59,11 +97,13 @@ export function ContentPage() {
         <Group justify="space-between">
           <Button variant="default" size="xs"
             onClick={() => {
+            // addContent('')
             navigate(`/main`)
             }}>
             Back to all bots
           </Button>
           <Text fw={700} fz="md">Content: {botName}</Text>
+          {addContentButtonStatus()}
           <Switch
             style={{marginTop: '1.5vmax', marginBottom: '1.5vmax'}}
             label="Only active users"
@@ -84,7 +124,7 @@ export function ContentPage() {
         </Group>
         <hr></hr>
         
-        <ContentList data={contentFilter}/>
+        <ContentList data={contentFilter} renameMeContent={renameMeContent} deleteContent={deleteContent} sendMeContent={sendMeContent}/>
       </div>
     )
   }

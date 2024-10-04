@@ -6,8 +6,8 @@ import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
 import { SocketApt } from '../socket/api/socket-api.ts'
 import { fix } from '../fix/fix.js'
 import { useParams } from 'react-router-dom'
-import { FindScreenForm } from '../components/screenList/FindScreenForm.tsx'
-import { ScreenItem } from '../components/screenList/ScreenItem.tsx'
+import { FindScreenForm } from '../components/botedit/screenList/FindScreenForm.tsx'
+import { ScreenItem } from '../components/botedit/screenList/ScreenItem.tsx'
 import { Grid } from '@mantine/core'
 
 export function BotEditPage() {

@@ -5,8 +5,8 @@ import '../styles/App.css'
 import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
 import { SocketApt } from '../socket/api/socket-api.ts'
 import { fix } from '../fix/fix.js'
-import { CreateNewBotForm } from '../components/createNewBotForm/CreateNewBotForm.tsx'
-import { BotItem } from '../components/listOfBots/BotItem.tsx'
+import { CreateNewBotForm } from '../components/main/CreateNewBotForm.tsx'
+import { BotItem } from '../components/main/BotItem.tsx'
 
 export function MainPage() {
 

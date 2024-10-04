@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom'
 
 export function BotItem({bot, deleteBot, offBot, onBot}) {
 
+  console.log(bot)
+
   const [deleteValue, setDeleteValue] = useState('')
   const navigate = useNavigate()
 
@@ -36,6 +38,14 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
     )
   }
 
+  const contentMode = (mode) => {
+    console.log(mode)
+    if(mode === 'addContent'){
+      return 'ON ⚠️'
+    }
+    return 'OFF'
+  }
+
   return (
     <Paper withBorder p="lg" radius="md" shadow="md">
       <Group justify="space-between" mb="xs">
@@ -51,6 +61,9 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
       </Text>
       <Text c="dimmed" fz="xs">
         Status: {botStatus(bot.status)}
+      </Text>
+      <Text c="dimmed" fz="xs">
+        Add-content mode: {contentMode(bot.mode)}
       </Text>
       <Group justify="flex-end" mt="md">
         <Button variant="default" size="xs"

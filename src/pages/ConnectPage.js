@@ -1,7 +1,7 @@
 import '@mantine/core/styles.css'
 import { useEffect } from 'react'
 import '../styles/App.css'
-import { HelloScreen } from '../components/helloscreen/HelloScreen.tsx'
+import { HelloScreen } from '../components/connect/HelloScreen.tsx'
 
 export function ConnectPage() {
 
