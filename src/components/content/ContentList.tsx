@@ -1,4 +1,4 @@
-import { Button, Grid, Group, Image, Table, TextInput } from "@mantine/core"
+import { Button, Grid, Image, Spoiler, Table, Text, TextInput, Tooltip } from "@mantine/core"
 import React, { useState } from 'react'
 
 export const ContentList = ({data, deleteContent, sendMeContent, renameMeContent}) => {
@@ -20,7 +20,7 @@ export const ContentList = ({data, deleteContent, sendMeContent, renameMeContent
         return 'no'
       }
       else if(element.type === 'text'){
-        return element.media
+        return textSize(element.media)
       }
       return 'no'
     }
@@ -29,28 +29,34 @@ export const ContentList = ({data, deleteContent, sendMeContent, renameMeContent
       console.log(rename)
       if(rename['index'] === index){
         return (
-          <Grid justify="space-between" align="stretch" grow>
-             <Grid.Col span={7}>
+          <Grid justify="space-between" grow>
+             <Grid.Col span={12}>
               <TextInput
-                value={rename['newName'] ? rename['newName'] : ''}
+                autoFocus
+                value={rename ? rename['newName'] : ''}
                 onChange={(event) => {
-                  setRename({...rename, newName: event})
+                  setRename({...rename, newName: event.currentTarget.value})
                 }}
                 variant="default" 
                 size="xs"
                 placeholder={element.tx}
               />
              </Grid.Col>
-             <Grid.Col span={2} offset={1}>
+             <Grid.Col span={8}>
               <Button
+                fullWidth
                 variant="default" 
                 size="xs"
-                onClick={() => renameMeContent(element, rename['newName'])}
+                onClick={() => {
+                  renameMeContent(element, rename['newName'])
+                  setRename({})
+                }}
                 >Save
               </Button>
             </Grid.Col>
-            <Grid.Col span={2}>
+            <Grid.Col span={4}>
               <Button
+                fullWidth
                 variant="default" 
                 size="xs"
                 onClick={() => setRename({})}
@@ -62,44 +68,58 @@ export const ContentList = ({data, deleteContent, sendMeContent, renameMeContent
         )
       }
       return (
-        <div 
-          onClick={() => {
-            setRename({index: index, newName: ''})
-          }}>
-          {element.tx ? element.tx : 'noname'}
-        </div>
+        <Tooltip label={'click to rename'}>
+          <div 
+            onClick={() => {
+              setRename({index: index, newName: ''})
+            }}>
+            {element.tx ? element.tx : 'noname'}
+          </div>
+        </Tooltip>
+      )
+    }
+
+    const textSize = (text) => {
+      if(text.length > 200){
+        return (
+          <Spoiler maxHeight={30} showLabel="Show more" hideLabel="Hide"><Text fz="md">
+            {text}
+          </Text></Spoiler>
+        )
+      }
+      return (
+        <Text fz="md">
+            {text}
+        </Text>
       )
     }
 
     const rows = data.map((element, index) => (
       
       <Table.Tr key={index}>
-        
         <Table.Td>{renameContent(element, index)}</Table.Td>
-        {/* <Table.Td>{element.tx}</Table.Td> */}
         <Table.Td>{element.type}</Table.Td>
         <Table.Td>{prewieImage(element)}</Table.Td>
-        
         <Table.Td w='5%'>
           <Button
-          variant="default" 
-          size="xs"
-          onClick={() => {
-            sendMeContent(element)
-          }}>
+            variant="default" 
+            size="xs"
+            onClick={() => {
+              sendMeContent(element)
+            }}>
             Send me
-        </Button>
+          </Button>
         </Table.Td>
         <Table.Td w='5%'>
           <Button 
-          color="red" 
-          size="xs"
-          onClick={() => {
-            deleteContent(element)
-          }}>
+            color="red" 
+            size="xs"
+            onClick={() => {
+              deleteContent(element)
+            }}>
             Delete
-        </Button></Table.Td>
-
+          </Button>
+        </Table.Td>
       </Table.Tr>
       
     ))

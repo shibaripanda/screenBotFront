@@ -6,7 +6,7 @@ import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
 import { SocketApt } from '../socket/api/socket-api.ts'
 import { fix } from '../fix/fix.js'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Group, Switch, Text, TextInput } from '@mantine/core'
+import { Button, Group, Text, TextInput } from '@mantine/core'
 import { ContentList } from '../components/content/ContentList.tsx'
 import { ModalAddMode } from '../components/content/ModalAddMode.tsx'
 
@@ -18,7 +18,6 @@ export function ContentPage() {
     setContent(data)
   })
   SocketApt.socket?.on('getAddContentMode', (data) => {
-    console.log(data)
     setAddContentMode(data)
   })
   
@@ -26,7 +25,7 @@ export function ContentPage() {
   const {botName} = useParams()
 
   const navigate = useNavigate()
-  const [checked, setChecked] = useState(false)
+  // const [checked, setChecked] = useState(false)
   const [filter, setFilter] = useState('')
   const [status, setStatus] = useState(false)
   const [content, setContent] = useState([])
@@ -104,7 +103,7 @@ export function ContentPage() {
           </Button>
           <Text fw={700} fz="md">Content: {botName}</Text>
           {addContentButtonStatus()}
-          <Switch
+          {/* <Switch
             style={{marginTop: '1.5vmax', marginBottom: '1.5vmax'}}
             label="Only active users"
             radius="lg"
@@ -112,7 +111,7 @@ export function ContentPage() {
             checked={checked}
             onChange={(event) => {
               setChecked(event.currentTarget.checked)
-            }}/>
+            }}/> */}
           <TextInput
               placeholder="filter"
               value={filter}
@@ -122,7 +121,7 @@ export function ContentPage() {
           />
           <Text>{contentFilter.length} / {content.length}</Text>
         </Group>
-        <hr></hr>
+        <hr style={{marginTop: '0.5vmax', marginBottom: '0.5vmax'}}></hr>
         
         <ContentList data={contentFilter} renameMeContent={renameMeContent} deleteContent={deleteContent} sendMeContent={sendMeContent}/>
       </div>

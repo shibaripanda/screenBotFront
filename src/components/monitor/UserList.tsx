@@ -2,7 +2,7 @@ import { Table } from "@mantine/core";
 import React from 'react'
 import { ModalSendMessage } from "./ModalSendMessage.tsx";
 
-export const UserList = ({data, screens, sendScreenToUser, sendTextToUser}) => {
+export const UserList = ({data, screens, sendScreenToUser, sendTextToUser, content}) => {
 
     const rowsList = Array.from(new Set((data.map(item => Object.keys(item.data))).flat(1)))
 
@@ -37,8 +37,7 @@ export const UserList = ({data, screens, sendScreenToUser, sendTextToUser}) => {
             data.map((item, index) => tableItem(item, index, element))
         )
     }
-
-    
+ 
     const currentScreen = (screen) => {
       const res = screens[screens.findIndex(item => item._id.toString() === screen)]
       if(res){
@@ -57,7 +56,7 @@ export const UserList = ({data, screens, sendScreenToUser, sendTextToUser}) => {
         {list(rowsList, element)}
         <Table.Td>{currentScreen(element.screen)}</Table.Td>
         <Table.Td>{status(element.activBot)}</Table.Td>
-        <Table.Td><ModalSendMessage screens={screens} activ={element.activBot} username={element.username} userId={element.id} user={element._id} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser}/></Table.Td>
+        <Table.Td><ModalSendMessage content={content} screens={screens} activ={element.activBot} username={element.username} userId={element.id} user={element._id} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser}/></Table.Td>
       </Table.Tr>
       
     ))

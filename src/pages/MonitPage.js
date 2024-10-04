@@ -21,6 +21,10 @@ export function MonitPage() {
     getScreens(await data.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
     console.log('recieve screens')
   })
+  SocketApt.socket?.on('getContent', (data) => {
+    setContent(data)
+  })
+  
   
   const {botId} = useParams()
   const {botName} = useParams()
@@ -31,6 +35,7 @@ export function MonitPage() {
   const [status, setStatus] = useState(false)
   const [users, setUsers] = useState([])
   const [screens, getScreens] = useState([])
+  const [content, setContent] = useState([])
 
   const usersFilter = useMemo(() => {
       const checkActiv = () => {
@@ -46,6 +51,7 @@ export function MonitPage() {
       window.location.assign(fix.appLink)
     }
     else{
+      SocketApt.socket.emit('getContent', botId)
       SocketApt.socket.emit('getUsers', botId)
       SocketApt.socket.emit('getScreens', botId)
       SocketApt.socket.emit('idForEditScreen', {botId: botId, screenId: ''})
@@ -95,7 +101,7 @@ export function MonitPage() {
         </Group>
         <hr></hr>
         
-        <UserList data={usersFilter} screens={screens} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser}/>
+        <UserList content={content} data={usersFilter} screens={screens} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser}/>
       </div>
     )
   }
