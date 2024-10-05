@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useDisclosure } from '@mantine/hooks'
-import { Modal, Button, Select, ComboboxItem, Textarea, Text } from '@mantine/core'
+import { Modal, Button, Select, ComboboxItem, Textarea, Text, Grid } from '@mantine/core'
 
-export function ModalSendMessage({content, userId, username, screens, activ, user, sendScreenToUser, sendTextToUser, sendContentToUser}) {
+export function ModalSendMessageGroup({selectedRows, content, screens, sendScreenToUser, sendTextToUser, sendContentToUser}) {
 
   const [opened, { open, close }] = useDisclosure(false)
   const [screen, setScreen] = useState<ComboboxItem | null>(null)
@@ -23,12 +23,21 @@ export function ModalSendMessage({content, userId, username, screens, activ, use
     return <Text fz='sm' c='grey'>Text {text.length}/4096</Text>
   }
 
+  const statusUser = (status) => {
+    if(status) return '✅'
+    return '❌'  
+  }
+
   return (
     <>
       <Modal size={'xl'} opened={opened} 
         onClose={close} 
-        title={`Message to @${username}`}
+        title={`Message to selected (${selectedRows.length})`}
       >
+        <Grid>
+          {selectedRows.map((item, index)=> <Grid.Col key={index} span={2}>@{item.username} {statusUser(item.status)}</Grid.Col>)}
+        </Grid>
+        <hr style={{marginBottom: '2vmax', marginTop: '1vmax'}}></hr>
         <Select
           clearable
           searchable
@@ -49,11 +58,14 @@ export function ModalSendMessage({content, userId, username, screens, activ, use
           onClick={() => {
             const res = screens.find(item => item._id === screen?.value)
             if(res){
-              sendScreenToUser(res._id, userId)
-              
+              for(let i of selectedRows){
+                if(i.status) sendScreenToUser(res._id, i.id)
+              }
             }
             else if(screen?.value.substring(0, 7) === 'content'){
-              sendContentToUser(content[Number(screen.value.split('_')[1])], userId)
+              for(let i of selectedRows){
+                if(i.status) sendContentToUser(content[Number(screen.value.split('_')[1])], i.id)
+              }
             }
             setScreen(null)
         }}>
@@ -71,19 +83,21 @@ export function ModalSendMessage({content, userId, username, screens, activ, use
           style={{marginTop: '1.5vmax'}}
           disabled={textButDis(text)}
           onClick={() => {
-            sendTextToUser(text, userId)
+            for(let i of selectedRows){
+              if(i.status) sendTextToUser(text, i.id)
+            }
             setText('')
           }}>
           Send text
         </Button>
       </Modal>
 
-      <Button variant="default" size="xs"
-        disabled={!activ}
+      <Button variant="default" size="xs" fullWidth
+        disabled={!selectedRows.length}
         onClick={() => {
             open()
             }}>
-        Send message
+        Message to selected ({selectedRows.length})
       </Button>
     </>
   )

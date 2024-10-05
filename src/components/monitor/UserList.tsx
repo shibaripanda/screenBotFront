@@ -1,8 +1,8 @@
-import { Table } from "@mantine/core";
+import { Table, Checkbox } from "@mantine/core";
 import React from 'react'
 import { ModalSendMessage } from "./ModalSendMessage.tsx";
 
-export const UserList = ({data, screens, sendScreenToUser, sendTextToUser, content}) => {
+export const UserList = ({setSelectedRows, selectedRows, data, screens, sendScreenToUser, sendTextToUser, content, sendContentToUser}) => {
 
     const rowsList = Array.from(new Set((data.map(item => Object.keys(item.data))).flat(1)))
 
@@ -51,12 +51,25 @@ export const UserList = ({data, screens, sendScreenToUser, sendTextToUser, conte
     const rows = data.map((element, index) => (
       
       <Table.Tr key={index}>
-        <Table.Td>{element._id}</Table.Td>
+        <Table.Td>
+          <Checkbox
+            aria-label="Select row"
+            checked={selectedRows.map(item => item.id).includes(element.id)}
+            onChange={(event) =>
+              setSelectedRows(
+                event.currentTarget.checked
+                  ? [...selectedRows, {id: element.id, username: element.username, status: element.activBot}]
+                  : selectedRows.filter((position) => position.id !== element.id)
+              )
+            }
+          />
+        </Table.Td>
+        {/* <Table.Td>{element._id}</Table.Td> */}
         <Table.Td>@{element.username}</Table.Td>
         {list(rowsList, element)}
         <Table.Td>{currentScreen(element.screen)}</Table.Td>
         <Table.Td>{status(element.activBot)}</Table.Td>
-        <Table.Td><ModalSendMessage content={content} screens={screens} activ={element.activBot} username={element.username} userId={element.id} user={element._id} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser}/></Table.Td>
+        <Table.Td><ModalSendMessage sendContentToUser={sendContentToUser} content={content} screens={screens} activ={element.activBot} username={element.username} userId={element.id} user={element._id} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser}/></Table.Td>
       </Table.Tr>
       
     ))
@@ -65,7 +78,8 @@ export const UserList = ({data, screens, sendScreenToUser, sendTextToUser, conte
         <Table>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>id</Table.Th>
+              <Table.Th>Select</Table.Th>
+              {/* <Table.Th>id</Table.Th> */}
               <Table.Th>username</Table.Th>
               {top(rowsList)}
               <Table.Th>Screen</Table.Th>

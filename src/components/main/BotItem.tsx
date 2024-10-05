@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom'
 
 export function BotItem({bot, deleteBot, offBot, onBot}) {
 
-  console.log(bot)
-
   const [deleteValue, setDeleteValue] = useState('')
   const navigate = useNavigate()
 
@@ -66,7 +64,7 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
         Add-content mode: {contentMode(bot.mode)}
       </Text>
       <Group justify="flex-end" mt="md">
-        <Button variant="default" size="xs"
+        <Button color="green" size="xs"
           onClick={() => {
             navigate(`/monit/${bot._id}/${bot.name} (@${bot.username})`)
           }}>
