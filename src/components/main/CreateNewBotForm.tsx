@@ -21,6 +21,7 @@ export function CreateNewBotForm({createBot}) {
     return (
         <Paper withBorder p="lg" radius="md" shadow="md">
             <TextInput
+            size="sm"
             label={resStatus}
             description='Token from BotFather:'
             placeholder="token"
@@ -30,7 +31,8 @@ export function CreateNewBotForm({createBot}) {
                 setValue(event.currentTarget.value)
             }}
             />
-            <Button 
+            <Button
+                size="xs" 
                 style={{marginTop: '1vmax'}}
                 disabled={activButton()}
                 onClick={()=> {

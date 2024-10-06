@@ -9,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Grid, Group, Switch, Text, TextInput } from '@mantine/core'
 import { UserList } from '../components/monitor/UserList.tsx'
 import { ModalSendMessageGroup } from '../components/monitor/ModalSendMessageGroup.tsx'
+import { GroupListMenu } from '../components/monitor/GroupListMenu.tsx'
 
 export function MonitPage() {
   
@@ -23,28 +24,39 @@ export function MonitPage() {
   SocketApt.socket?.on('getContent', (data) => {
     setContent(data)
   })
+  SocketApt.socket?.on('getGroups', (data) => {
+    setGroups(data)
+  })
   
   
   const {botId} = useParams()
   const {botName} = useParams()
 
   const navigate = useNavigate()
-  const [checked, setChecked] = useState(false)
+  const [checked, setChecked] = useState(true)
   const [filter, setFilter] = useState('')
   const [status, setStatus] = useState(false)
   const [users, setUsers] = useState([])
   const [screens, getScreens] = useState([])
   const [content, setContent] = useState([])
   const [selectedRows, setSelectedRows] = useState([])
+  const [groups, setGroups] = useState([])
+  const [activGroup, setActivGroup] = useState({})
+  const [rename, setRename] = useState(false)
+  const [newGroupName, setNewGroupName] = useState('')
 
   const usersFilter = useMemo(() => {
       const checkActiv = () => {
         if(checked) return [true]
         return [true, false]
       }
-      console.log(selectedRows)
-      return users.filter(item => (Object.values(item.data).join() + item.username + item._id).toLowerCase().includes(filter.toLowerCase()) && checkActiv().includes(item.activBot))
-    }, [filter, users, checked, selectedRows]
+      const groupFilter = (id) => {
+        if(typeof activGroup['group'] !== 'undefined') return activGroup.group.includes(id)
+          return true
+      }
+      console.log(activGroup)
+      return users.filter(item => (Object.values(item.data).join() + item.username + item._id).toLowerCase().includes(filter.toLowerCase()) && checkActiv().includes(item.activBot) && groupFilter(item.id))
+    }, [filter, users, checked, activGroup]
   )
 
   useEffect(() => {
@@ -52,6 +64,7 @@ export function MonitPage() {
       window.location.assign(fix.appLink)
     }
     else{
+      SocketApt.socket.emit('getGroups', botId)
       SocketApt.socket.emit('getContent', botId)
       SocketApt.socket.emit('getUsers', botId)
       SocketApt.socket.emit('getScreens', botId)
@@ -68,6 +81,15 @@ export function MonitPage() {
   }
   const sendContentToUser = (item, userId) => {
     SocketApt.socket.emit('sendContentToUser', {botId: botId, userId: userId, content: item})
+  }
+  const createGroup = (group) => {
+    SocketApt.socket.emit('createGroup', {botId: botId, group: group})
+  }
+  const deleteGroup = (group) => {
+    SocketApt.socket.emit('deleteGroup', {botId: botId, group: group})
+  }
+  const renameGroup = (group, name) => {
+    SocketApt.socket.emit('renameGroup', {botId: botId, group: group, newName: name})
   }
 
   const selected = () => {
@@ -92,14 +114,98 @@ export function MonitPage() {
     return (
       <Button variant="default" size="xs" fullWidth
               onClick={() => {
+                const mes = []
                 for(let i of usersFilter){
-                  setSelectedRows([...selectedRows, {id: i.id, username: i.username, status: i.activBot}])
+                  mes.push({id: i.id, username: i.username, status: i.activBot})
                 }
+                setSelectedRows(mes)
               }}>
               Select all
       </Button>
     )
   }
+
+  const renameButAndInput = () => {
+    if(rename){
+      return (
+        <TextInput
+          size='xs'
+          placeholder={activGroup.name}
+          value={newGroupName}
+          onChange={(event) => {
+            setNewGroupName(event.currentTarget.value)
+          }}
+        />
+      )
+    }
+    return (
+      <Text>Group: {activGroup.name} ({activGroup.group.length})</Text>
+    )
+  }
+
+  const renameButAndInput1 = () => {
+    if(rename){
+      return (
+        <Grid>
+          <Grid.Col span={6}>
+            <Button variant="default" size="xs" fullWidth
+                onClick={() => {
+                  renameGroup(activGroup, newGroupName)
+                  setRename(false)
+                  setActivGroup([])
+                }}>
+                Save
+            </Button>
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <Button variant="default" size="xs" fullWidth
+                onClick={() => {
+                  setRename(false)
+                  setNewGroupName('')
+                }}>
+                Cancel
+            </Button>
+          </Grid.Col>
+        
+        </Grid>
+      )
+    }
+    return (
+      <Button variant="default" size="xs" fullWidth
+            onClick={() => {
+              setRename(true)
+            }}>
+            Rename group
+      </Button>
+    )
+  }
+
+  const groupSettings = () => {
+    if(typeof activGroup['group'] !== 'undefined'){
+      return (
+        <>
+        <Grid align="center" style={{marginTop: '0.7vmax', marginBottom: '0.7vmax'}}>
+          <Grid.Col span={4}>
+            {renameButAndInput()}
+          </Grid.Col>
+          <Grid.Col span={2}>
+            {renameButAndInput1()}
+          </Grid.Col>
+          <Grid.Col span={2}>
+            <Button variant="default" size="xs" fullWidth
+              onClick={() => {
+                deleteGroup(activGroup)
+                setActivGroup([])
+              }}>
+              Delete group
+            </Button>
+          </Grid.Col>
+        </Grid>
+        <hr></hr>
+        </>
+      )
+    }
+  } 
 
  
   if(users && status && screens.length){
@@ -139,29 +245,23 @@ export function MonitPage() {
             {selected()}
           </Grid.Col>
           <Grid.Col span={2}>
+            <GroupListMenu deleteGroup={deleteGroup} groups={groups} setActivGroup={setActivGroup} activGroup={activGroup}/>
+          </Grid.Col>
+          <Grid.Col span={2}>
+            <Button variant="default" size="xs" fullWidth
+              disabled={!selectedRows.length}
+              onClick={() => {
+                createGroup(selectedRows.map(item => item.id))
+              }}>
+              Greate group ({selectedRows.length})
+            </Button>
+          </Grid.Col>
+          <Grid.Col span={2}>
             <ModalSendMessageGroup selectedRows={selectedRows} sendContentToUser={sendContentToUser} content={content} screens={screens} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser}/>
           </Grid.Col>
           <Grid.Col span={2}>
             <Button variant="default" size="xs" fullWidth
-              disabled={!selectedRows.length}
-              onClick={() => {
-                
-              }}>
-              Greate group
-            </Button>
-          </Grid.Col>
-          <Grid.Col span={2}>
-            <Button variant="default" size="xs" fullWidth
-              disabled={!selectedRows.length}
-              onClick={() => {
-                
-              }}>
-              Message to group
-            </Button>
-          </Grid.Col>
-          <Grid.Col span={2}>
-            <Button variant="default" size="xs" fullWidth
-              disabled={!selectedRows.length}
+              disabled={true}
               onClick={() => {
                 
               }}>
@@ -170,7 +270,7 @@ export function MonitPage() {
           </Grid.Col>
           <Grid.Col span={2}>
             <Button variant="default" size="xs" fullWidth
-              disabled={!selectedRows.length}
+              disabled={true}
               onClick={() => {
                 
               }}>
@@ -180,6 +280,7 @@ export function MonitPage() {
           
         </Grid>
         <hr></hr>
+        {groupSettings()}
         <UserList setSelectedRows={setSelectedRows} selectedRows={selectedRows} content={content} data={usersFilter} screens={screens} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser} sendContentToUser={sendContentToUser}/>
       </div>
     )

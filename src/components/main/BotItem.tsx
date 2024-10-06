@@ -1,4 +1,4 @@
-import { Button, Paper, Text, Group, TextInput } from '@mantine/core'
+import { Button, Paper, Text, Group, TextInput, Grid } from '@mantine/core'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -18,24 +18,23 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
   const onOffButton = () => {
     if(bot.status){
       return (
-        <Button variant="default" size="xs"
+        <Button variant="default" size="xs" fullWidth
         onClick={() => {
           offBot(bot._id)
         }}>
-          Off
+          OFF
         </Button>
       )
     }
     return (
-      <Button variant="default" size="xs"
+      <Button variant="default" size="xs" fullWidth
       onClick={() => {
         onBot(bot._id)
       }}>
-          On
+          ON
       </Button>
     )
   }
-
   const contentMode = (mode) => {
     console.log(mode)
     if(mode === 'addContent'){
@@ -48,61 +47,82 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
     <Paper withBorder p="lg" radius="md" shadow="md">
       <Group justify="space-between" mb="xs">
         <Text fz="md" fw={500}>
-          {bot.name} (@{bot.username}) {botStatus(bot.status)}
+          {bot.name} (@{bot.username}) <br/>Status: {botStatus(bot.status)}
         </Text>
       </Group>
       <Text c="dimmed" fz="xs">
+        Created: {new Date(bot.createdAt).toLocaleDateString()}
+      </Text>
+      <Text c="dimmed" fz="xs">
         id: {bot._id}
       </Text>
-      <Text c="dimmed" fz="xs">
-        {new Date(bot.createdAt).toLocaleDateString()}
-      </Text>
-      <Text c="dimmed" fz="xs">
+      {/* <Text c="dimmed" fz="xs">
         Status: {botStatus(bot.status)}
-      </Text>
+      </Text> */}
       <Text c="dimmed" fz="xs">
         Add-content mode: {contentMode(bot.mode)}
       </Text>
-      <Group justify="flex-end" mt="md">
-        <Button color="green" size="xs"
-          onClick={() => {
-            navigate(`/monit/${bot._id}/${bot.name} (@${bot.username})`)
-          }}>
-          Monitor
-        </Button>
-        <Button variant="default" size="xs"
-          onClick={() => {
-            navigate(`/content/${bot._id}/${bot.name} (@${bot.username})`)
-          }}>
-          Content
-        </Button>
-        <Button variant="default" size="xs"
-          onClick={() => {
-            navigate(`/botedit/${bot._id}`)
-          }}>
-          Edit
-        </Button>
-        {onOffButton()}
-        <TextInput
-            size="xs"
-            placeholder='Text bot`s name for delete'
-            value={deleteValue}
-            onChange={(event) => {
-              setDeleteValue(event.currentTarget.value)
-            }}
-            />
-        <Button
-         disabled={deleteButton()}
-         color='red'
-         size="xs"
-         onClick={() => {
-          deleteBot(bot._id)
-          setDeleteValue('')
-        }}
-         >
-          Delete
-        </Button>
-      </Group>
+
+      <Grid style={{marginTop: '1.5vmax'}}>
+        <Grid.Col span={5}>
+          <Button color="green" size="xs" fullWidth
+                    onClick={() => {
+                      navigate(`/monit/${bot._id}/${bot.name} (@${bot.username})`)
+                    }}>
+                    Monitor
+                  </Button>
+        </Grid.Col>
+        <Grid.Col span={3.5}>
+          <Button variant="default" size="xs" fullWidth
+                    onClick={() => {
+                      navigate(`/content/${bot._id}/${bot.name} (@${bot.username})`)
+                    }}>
+                    Content
+                  </Button>
+        </Grid.Col>
+        <Grid.Col span={3.5}>
+          <Button variant="default" size="xs" fullWidth
+                    onClick={() => {
+                      navigate(`/botedit/${bot._id}`)
+                    }}>
+                    Constructor
+                  </Button>
+        </Grid.Col>
+      </Grid>
+
+      <hr  style={{marginTop: '1.5vmax'}}></hr>
+
+      <Grid style={{marginTop: '1vmax'}}>
+        <Grid.Col span={2.5}></Grid.Col>
+        <Grid.Col span={2.5}></Grid.Col>
+        <Grid.Col span={2}>
+          {onOffButton()}
+        </Grid.Col>
+        <Grid.Col span={3}>
+          <TextInput
+                      size="xs"
+                      placeholder='Text bot`s name for delete'
+                      value={deleteValue}
+                      onChange={(event) => {
+                        setDeleteValue(event.currentTarget.value)
+                      }}
+                      />
+        </Grid.Col>
+        <Grid.Col span={2}>
+          <Button fullWidth
+                  disabled={deleteButton()}
+                  color='red'
+                  size="xs"
+                  onClick={() => {
+                    deleteBot(bot._id)
+                    setDeleteValue('')
+                  }}
+                  >
+                    Delete
+                  </Button>
+        </Grid.Col>
+      </Grid>
+
     </Paper>
   );
 }

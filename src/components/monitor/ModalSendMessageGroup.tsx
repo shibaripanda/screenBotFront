@@ -35,7 +35,7 @@ export function ModalSendMessageGroup({selectedRows, content, screens, sendScree
         title={`Message to selected (${selectedRows.length})`}
       >
         <Grid>
-          {selectedRows.map((item, index)=> <Grid.Col key={index} span={2}>@{item.username} {statusUser(item.status)}</Grid.Col>)}
+          {selectedRows.map((item, index)=> <Grid.Col key={index} span={3}>@{item.username}{statusUser(item.status)}</Grid.Col>)}
         </Grid>
         <hr style={{marginBottom: '2vmax', marginTop: '1vmax'}}></hr>
         <Select
