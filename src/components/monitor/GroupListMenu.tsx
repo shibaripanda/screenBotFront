@@ -12,7 +12,7 @@ export function GroupListMenu({groups, setActivGroup, activGroup}) {
                 onClick={() => {
                     setActivGroup(item)
                 }}>
-                {item.name}
+                {item.name} ({item.group.length})
             </Menu.Item>)
 
   return (
@@ -29,6 +29,7 @@ export function GroupListMenu({groups, setActivGroup, activGroup}) {
             }}>
             All users
         </Menu.Item>
+        <hr></hr>
             {menuItems}
         </Menu.Dropdown>
     </Menu>

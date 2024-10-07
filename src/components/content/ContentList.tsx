@@ -26,7 +26,6 @@ export const ContentList = ({data, deleteContent, sendMeContent, renameMeContent
     }
 
     const renameContent = (element, index) => {
-      console.log(rename)
       if(rename['index'] === index){
         return (
           <Grid justify="space-between" grow>

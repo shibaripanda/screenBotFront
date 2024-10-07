@@ -1,4 +1,4 @@
-import { Button, Paper, Text, Group, TextInput, Grid } from '@mantine/core'
+import { Button, Paper, Text, TextInput, Grid } from '@mantine/core'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -36,7 +36,6 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
     )
   }
   const contentMode = (mode) => {
-    console.log(mode)
     if(mode === 'addContent'){
       return 'ON ⚠️'
     }
@@ -45,20 +44,27 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
 
   return (
     <Paper withBorder p="lg" radius="md" shadow="md">
-      <Group justify="space-between" mb="xs">
-        <Text fz="md" fw={500}>
-          {bot.name} (@{bot.username}) <br/>Status: {botStatus(bot.status)}
-        </Text>
-      </Group>
+
+      <Grid justify="space-between" style={{marginBottom: '1.5vmax'}}>
+        <Grid.Col span={6}>
+          <Text fz="md" fw={500}>
+            {bot.name} (@{bot.username})
+          </Text>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          {/* Status: {botStatus(bot.status)} */}
+        </Grid.Col>
+        <Grid.Col span={2}>
+          Status {botStatus(bot.status)}
+        </Grid.Col>
+      </Grid>
+
       <Text c="dimmed" fz="xs">
         Created: {new Date(bot.createdAt).toLocaleDateString()}
       </Text>
       <Text c="dimmed" fz="xs">
         id: {bot._id}
       </Text>
-      {/* <Text c="dimmed" fz="xs">
-        Status: {botStatus(bot.status)}
-      </Text> */}
       <Text c="dimmed" fz="xs">
         Add-content mode: {contentMode(bot.mode)}
       </Text>
@@ -66,6 +72,7 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
       <Grid style={{marginTop: '1.5vmax'}}>
         <Grid.Col span={5}>
           <Button color="green" size="xs" fullWidth
+                    disabled={!bot.status}
                     onClick={() => {
                       navigate(`/monit/${bot._id}/${bot.name} (@${bot.username})`)
                     }}>
@@ -74,6 +81,7 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
         </Grid.Col>
         <Grid.Col span={3.5}>
           <Button variant="default" size="xs" fullWidth
+                    disabled={!bot.status} 
                     onClick={() => {
                       navigate(`/content/${bot._id}/${bot.name} (@${bot.username})`)
                     }}>
@@ -82,6 +90,7 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
         </Grid.Col>
         <Grid.Col span={3.5}>
           <Button variant="default" size="xs" fullWidth
+                    disabled={!bot.status}
                     onClick={() => {
                       navigate(`/botedit/${bot._id}`)
                     }}>

@@ -259,7 +259,7 @@ export function ModalCreateScreen({deleteContentItem, editScreenName, screenForA
   }
 
   const blockEditStartScreen = () => {
-    if(screen.name === 'Start screen') return true
+    if(['Start screen', 'Error screen'].includes(screen.name)) return true
     return false
   }
 

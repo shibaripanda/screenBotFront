@@ -29,7 +29,7 @@ export function ContentPage() {
   const [filter, setFilter] = useState('')
   const [status, setStatus] = useState(false)
   const [content, setContent] = useState([])
-  const [addContentmode, setAddContentMode] = useState('check')
+  const [addContentmode, setAddContentMode] = useState('')
 
   const contentFilter = useMemo(() => {
       return content.filter(item => (Object.values(item).join()).toLowerCase().includes(filter.toLowerCase()))
@@ -66,12 +66,13 @@ export function ContentPage() {
   }
 
   const addContentButtonStatus = () => {
-    if(addContentmode === 'check'){
-      return (
-        <></>
-      )
-    }
-    else if(!addContentmode){
+    // if(addContentmode === 'check'){
+    //   return (
+    //     <></>
+    //   )
+    // }
+    // else 
+    if(!addContentmode){
       return (
         <ModalAddMode addContent={addContent} setAddContentMode={setAddContentMode}/>
       )
@@ -103,16 +104,8 @@ export function ContentPage() {
           </Button>
           <Text fw={700} fz="md">Content: {botName}</Text>
           {addContentButtonStatus()}
-          {/* <Switch
-            style={{marginTop: '1.5vmax', marginBottom: '1.5vmax'}}
-            label="Only active users"
-            radius="lg"
-            color='green'
-            checked={checked}
-            onChange={(event) => {
-              setChecked(event.currentTarget.checked)
-            }}/> */}
           <TextInput
+          size='xs'
               placeholder="filter"
               value={filter}
               onChange={(event) => {

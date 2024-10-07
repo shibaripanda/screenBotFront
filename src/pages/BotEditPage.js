@@ -27,7 +27,6 @@ export function BotEditPage() {
   })
   SocketApt.socket?.on('getScreens', async (data) => {
     getScreens(await data.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
-    console.log('recieve screens')
   })
 
   useEffect(() => {

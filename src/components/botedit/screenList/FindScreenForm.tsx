@@ -25,7 +25,7 @@ export function FindScreenForm({screenFilterLength, bot, screens, createScreen, 
                     }}>
                     Back to all bots
                 </Button>
-                <Text fw={700}>{bot.name + ' (@' + bot.username + ')'}</Text>
+                <Text fw={700}>Constructor: {bot.name + ' (@' + bot.username + ')'}</Text>
             </Group>
 
             <hr style={{marginBottom: '2vmax', marginTop: '1.2vmax'}}></hr>

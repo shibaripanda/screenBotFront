@@ -54,7 +54,6 @@ export function MonitPage() {
         if(typeof activGroup['group'] !== 'undefined') return activGroup.group.includes(id)
           return true
       }
-      console.log(activGroup)
       return users.filter(item => (Object.values(item.data).join() + item.username + item._id).toLowerCase().includes(filter.toLowerCase()) && checkActiv().includes(item.activBot) && groupFilter(item.id))
     }, [filter, users, checked, activGroup]
   )
@@ -124,7 +123,6 @@ export function MonitPage() {
       </Button>
     )
   }
-
   const renameButAndInput = () => {
     if(rename){
       return (
@@ -142,7 +140,6 @@ export function MonitPage() {
       <Text>Group: {activGroup.name} ({activGroup.group.length})</Text>
     )
   }
-
   const renameButAndInput1 = () => {
     if(rename){
       return (
@@ -179,12 +176,11 @@ export function MonitPage() {
       </Button>
     )
   }
-
   const groupSettings = () => {
     if(typeof activGroup['group'] !== 'undefined'){
       return (
         <>
-        <Grid align="center" style={{marginTop: '0.7vmax', marginBottom: '0.7vmax'}}>
+        <Grid align="center" style={{marginTop: '0.5vmax', marginBottom: '0.5vmax'}}>
           <Grid.Col span={4}>
             {renameButAndInput()}
           </Grid.Col>
@@ -220,7 +216,6 @@ export function MonitPage() {
           </Button>
           <Text fw={700} fz="md">Users: {botName}</Text>
           <Switch
-            style={{marginTop: '1.5vmax', marginBottom: '1.5vmax'}}
             label="Only active users"
             radius="lg"
             color='green'
@@ -228,7 +223,6 @@ export function MonitPage() {
             onChange={(event) => {
               setChecked(event.currentTarget.checked)
             }}/>
-          {/* <ModalSendMessageGroup selectedRows={selectedRows} sendContentToUser={sendContentToUser} content={content} screens={screens} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser}/> */}
           <TextInput
               size='xs'
               placeholder="filter"
@@ -239,8 +233,10 @@ export function MonitPage() {
           />
           <Text>{usersFilter.length} / {users.length}</Text>
         </Group>
-        <hr></hr>
-        <Grid style={{marginTop: '0.7vmax', marginBottom: '0.7vmax'}}>
+
+        <hr color='grey' width='1' style={{marginTop: '0.5vmax'}}></hr>
+
+        <Grid style={{marginTop: '0.5vmax', marginBottom: '0.5vmax'}}>
           <Grid.Col span={2}>
             {selected()}
           </Grid.Col>
@@ -277,9 +273,10 @@ export function MonitPage() {
               Download XLS
             </Button>
           </Grid.Col>
-          
         </Grid>
+
         <hr></hr>
+
         {groupSettings()}
         <UserList setSelectedRows={setSelectedRows} selectedRows={selectedRows} content={content} data={usersFilter} screens={screens} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser} sendContentToUser={sendContentToUser}/>
       </div>

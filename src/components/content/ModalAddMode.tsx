@@ -39,7 +39,7 @@ export function ModalAddMode({addContent, setAddContentMode}) {
       </Modal>
 
       <Button
-          color='green'
+          variant="default" 
           size="xs"
           onClick={() => {
             open()
