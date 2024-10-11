@@ -1,8 +1,9 @@
 import React from 'react'
 import { Button, Grid, Group, Paper, Text, TextInput } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
+import { SpesialListMenu } from '../SpesialListMenu.tsx'
 
-export function FindScreenForm({screenFilterLength, bot, screens, createScreen, newScreenName, setNewScreenName, filterScreens, setFilterScreens}) {
+export function FindScreenForm({spScreen, setSpScreen, screenFilterLength, bot, screens, createScreen, newScreenName, setNewScreenName, filterScreens, setFilterScreens}) {
 
     const navigate = useNavigate()
 
@@ -31,8 +32,9 @@ export function FindScreenForm({screenFilterLength, bot, screens, createScreen, 
             <hr style={{marginBottom: '2vmax', marginTop: '1.2vmax'}}></hr>
 
             <Grid justify="space-between" align="flex-end" grow>
-                <Grid.Col span={8} key={0}>
+                <Grid.Col span={12} key={0}>
                     <TextInput
+                        size='xs'
                         description='Create new screen'
                         placeholder="new screen name"
                         value={newScreenName}
@@ -41,8 +43,9 @@ export function FindScreenForm({screenFilterLength, bot, screens, createScreen, 
                         }}
                     />
                 </Grid.Col>
-                <Grid.Col span={4} key={1}>
-                    <Button variant="default" 
+                <Grid.Col span={6} key={1}>
+                    <Button variant="default" fullWidth
+                        size='xs' 
                         disabled={activButtonCreateScreen()}
                         onClick={() => {
                             createScreen(newScreenName)
@@ -51,13 +54,26 @@ export function FindScreenForm({screenFilterLength, bot, screens, createScreen, 
                         Create new screen
                     </Button>
                 </Grid.Col>
+                <Grid.Col span={6} key={2}>
+                    <SpesialListMenu spScreen={spScreen} setSpScreen={setSpScreen} activButtonCreateScreen={activButtonCreateScreen}/>
+                    {/* <Button variant="default" fullWidth
+                        size='xs' 
+                        disabled={activButtonCreateScreen()}
+                        onClick={() => {
+                            createScreen(newScreenName)
+                            setNewScreenName('')
+                            }}>
+                        Create special screen
+                    </Button> */}
+                </Grid.Col>
             </Grid>
 
-            <hr style={{marginBottom: '2vmax', marginTop: '3vmax'}}></hr>
+            <hr style={{marginBottom: '2vmax', marginTop: '2vmax'}}></hr>
 
             <Grid justify="space-between" align="flex-end" grow>
-                <Grid.Col span={8} key={0}>
+                <Grid.Col span={12} key={0}>
                     <TextInput
+                        size='xs'
                         description='Find screen by name:'
                         placeholder="screen name"
                         value={filterScreens}
@@ -66,8 +82,9 @@ export function FindScreenForm({screenFilterLength, bot, screens, createScreen, 
                         }}
                     />
                 </Grid.Col>
-                <Grid.Col span={4} key={1}>
-                    <Button variant="default"
+                <Grid.Col span={12} key={1}>
+                    <Button variant="default" fullWidth
+                        size='xs'
                         disabled={activButtonFilter()}
                         onClick={() => {
                             setFilterScreens('')

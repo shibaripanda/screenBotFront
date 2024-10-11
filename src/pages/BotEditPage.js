@@ -20,6 +20,7 @@ export function BotEditPage() {
   const [newScreenName, setNewScreenName] = useState('')
   const [filterScreens, setFilterScreens] = useState('')
   const [status, setStatus] = useState(false)
+  const [spScreen, setSpScreen] = useState('')
 
 
   SocketApt.socket?.on('getBot', (data) => {
@@ -135,6 +136,8 @@ export function BotEditPage() {
               setNewScreenName={setNewScreenName} 
               filterScreens={filterScreens}
               setFilterScreens={setFilterScreens}
+              spScreen={spScreen} 
+              setSpScreen={setSpScreen}
             />
           </Grid.Col>
           {loadingItem()}

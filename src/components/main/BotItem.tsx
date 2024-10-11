@@ -70,7 +70,7 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
       </Text>
 
       <Grid style={{marginTop: '1.5vmax'}}>
-        <Grid.Col span={5}>
+        <Grid.Col span={4.5}>
           <Button color="green" size="xs" fullWidth
                     disabled={!bot.status}
                     onClick={() => {
@@ -79,7 +79,7 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
                     Monitor
                   </Button>
         </Grid.Col>
-        <Grid.Col span={3.5}>
+        <Grid.Col span={2.5}>
           <Button variant="default" size="xs" fullWidth
                     disabled={!bot.status} 
                     onClick={() => {
@@ -88,7 +88,16 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
                     Content
                   </Button>
         </Grid.Col>
-        <Grid.Col span={3.5}>
+        <Grid.Col span={2.5}>
+          <Button variant="default" size="xs" fullWidth
+                    disabled={!bot.status} 
+                    onClick={() => {
+                      navigate(`/event/${bot._id}/${bot.name} (@${bot.username})`)
+                    }}>
+                    Events
+                  </Button>
+        </Grid.Col>
+        <Grid.Col span={2.5}>
           <Button variant="default" size="xs" fullWidth
                     disabled={!bot.status}
                     onClick={() => {

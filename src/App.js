@@ -9,6 +9,7 @@ import { MainPage } from './pages/MainPage'
 import { BotEditPage } from './pages/BotEditPage'
 import { MonitPage } from './pages/MonitPage'
 import { ContentPage } from './pages/ContentPage'
+import { EventPage } from './pages/EventPage'
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
             <Route path="/botedit/:botId" element={<BotEditPage/>} />
             <Route path="/monit/:botId/:botName" element={<MonitPage/>} />
             <Route path="/content/:botId/:botName" element={<ContentPage/>} />
+            <Route path="/event/:botId/:botName" element={<EventPage/>} />
           </Routes>
         </BrowserRouter>
     </MantineProvider>
