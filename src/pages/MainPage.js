@@ -3,10 +3,12 @@ import '@mantine/core/styles.css'
 import { useEffect, useState } from 'react'
 import '../styles/App.css'
 import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
-import { SocketApt } from '../socket/api/socket-api.ts'
+// import { SocketApt } from '../socket/api/socket-api.ts'
 import { fix } from '../fix/fix.js'
 import { CreateNewBotForm } from '../components/main/CreateNewBotForm.tsx'
 import { BotItem } from '../components/main/BotItem.tsx'
+import { pipSendSocket } from '../socket/pipSendSocket.ts'
+import { pipGetSocket } from '../socket/pipGetSocket.ts'
 
 export function MainPage() {
 
@@ -15,31 +17,39 @@ export function MainPage() {
   const [status, setStatus] = useState(false)
   const [bots, setBots] = useState(false)
 
-  SocketApt.socket?.on('getMyBots', (data) => {
-    setBots(data.sort((a ,b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
-  })
+  // SocketApt.socket?.on('getMyBots', (data) => {
+  //   setBots(data.sort((a ,b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
+  // })
 
   useEffect(() => {
     if(!sessionStorage.getItem('token')){
       window.location.assign(fix.appLink)
     }
     else{
-      SocketApt.socket.emit('getMyBots')
+      const pipSocketListners = [
+        {pip: 'getMyBots', handler: setBots},
+      ]
+      pipGetSocket(pipSocketListners)
+      pipSendSocket('getMyBots')
       setStatus(true)
     }
   }, [])
 
   const deleteBot = (_id) => {
-    SocketApt.socket.emit('deleteBot', _id)
+    pipSendSocket('deleteBot', _id)
+    // SocketApt.socket.emit('deleteBot', _id)
   }
   const createBot = (token) => {
-    SocketApt.socket.emit('createNewBot', token)
+    pipSendSocket('createNewBot', token)
+    // SocketApt.socket.emit('createNewBot', token)
   }
   const offBot = (_id) => {
-    SocketApt.socket.emit('offBot', _id)
+    pipSendSocket('offBot', _id)
+    // SocketApt.socket.emit('offBot', _id)
   }
   const onBot = (_id) => {
-    SocketApt.socket.emit('onBot', _id)
+    pipSendSocket('onBot', _id)
+    // SocketApt.socket.emit('onBot', _id)
   }
 
   

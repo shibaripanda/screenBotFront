@@ -10,7 +10,7 @@ export function ModalCreateEventPermament({createEvent}) {
 
   const createEventHandler = () => {
     console.log('sdsdsdsdsd')
-    createEvent({name: Date.now().toString()})
+    createEvent({name: 'New multi event ' + Date.now().toString()})
     close()
   }
 
@@ -20,17 +20,17 @@ export function ModalCreateEventPermament({createEvent}) {
         onClose={() => {
             setTimeout(() => {close()}, )
             }} 
-        title='Creating new permanent event'
+        title='Creating new multi event'
       >
 
         <Grid>
           <Grid.Col span={12}>
-            <ButtonApp title='Create a permanent event' handler={createEventHandler} />
+            <ButtonApp title='Create a multi event' handler={createEventHandler} />
           </Grid.Col>
         </Grid>
 
       </Modal>
-      <ButtonApp title='Create a permanent event' handler={open} />
+      <ButtonApp title='Create a multi event' handler={open} />
     </>
   )
 }

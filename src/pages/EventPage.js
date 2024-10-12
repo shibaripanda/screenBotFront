@@ -3,7 +3,6 @@ import '@mantine/core/styles.css'
 import { useEffect, useMemo, useState } from 'react'
 import '../styles/App.css'
 import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
-import { SocketApt } from '../socket/api/socket-api.ts'
 import { fix } from '../fix/fix.js'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Grid } from '@mantine/core'
@@ -13,10 +12,13 @@ import { ModalCreateEventPermament } from '../components/events/ModalCreateEvent
 import { ButtonApp } from '../components/comps/ButtonApp.tsx'
 import { TextApp } from '../components/comps/TextApp.tsx'
 import { TextInputApp } from '../components/comps/TextInputApp.tsx'
+import { pipGetSocket } from '../socket/pipGetSocket.ts'
+import { pipSendSocket } from '../socket/pipSendSocket.ts'
 
 export function EventPage() {
 
   useConnectSocket()
+
   const {botId} = useParams()
   const {botName} = useParams()
 
@@ -28,22 +30,18 @@ export function EventPage() {
   const [filterEvents, setFilterEvents] = useState('')
   const [status, setStatus] = useState(false)
 
-
-  SocketApt.socket?.on('getBot', (data) => {
-    setBot(data)
-  })
-  SocketApt.socket?.on('getEvents', (data) => {
-    console.log(data)
-    setEvents(data)
-  })
-
   useEffect(() => {
     if(!sessionStorage.getItem('token')){
       window.location.assign(fix.appLink)
     }
     else{
-      SocketApt.socket.emit('getBot', botId)
-      SocketApt.socket.emit('getEvents', botId)
+      const pipSocketListners = [
+        {pip: 'getBot', handler: setBot},
+        {pip: 'getEvents', handler: setEvents}
+      ]
+      pipGetSocket(pipSocketListners)
+      pipSendSocket('getBot', botId)
+      pipSendSocket('getEvents', botId)
       setStatus(true)
     }
   }, [botId])
@@ -54,17 +52,14 @@ export function EventPage() {
   )
 
   const func = {
-    createEvent: async (event) => SocketApt.socket.emit('createEvent', {botId: bot._id, event: event}),
-    deleteEvent: async (event) => SocketApt.socket.emit('deleteEvent', {botId: bot._id, event: event})
+    createEvent: async (event) => pipSendSocket('createEvent', {botId: bot._id, event: event}),
+    deleteEvent: async (event) => pipSendSocket('deleteEvent', {botId: bot._id, event: event})
   }
 
   const handlers = {
     backToAllBotsHandler: () => navigate(`/main`)
   }
 
- 
-
-  
   if(bot && status){
     return (
       <div style={{width: '100%', marginTop: '0.5vmax', marginBottom: '3vmax', marginLeft: '0.5vmax', marginRight: '0.5vmax'}}>
