@@ -1,4 +1,4 @@
-import { Button, Paper, Text, Group, TextInput } from '@mantine/core';
+import { Paper, Text, Group } from '@mantine/core';
 import React, { useState } from 'react'
 import { ButtonApp } from '../comps/ButtonApp.tsx';
 
@@ -16,13 +16,7 @@ export function EventItem({event, deleteEvent}) {
         <Text>{event.name}</Text>
       </Group>
       <Group justify="flex-end" mt="md" grow>
-        <ButtonApp title='Delete' handler={deleteEventHandler} />
-        {/* <Button variant="default" size="xs"
-          onClick={() => {
-
-          }}>
-          Send me
-        </Button> */}
+        <ButtonApp title='Delete' handler={deleteEventHandler} disabled={false}/>
       </Group>
     </Paper>
   )

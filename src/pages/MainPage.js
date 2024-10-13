@@ -9,6 +9,7 @@ import { CreateNewBotForm } from '../components/main/CreateNewBotForm.tsx'
 import { BotItem } from '../components/main/BotItem.tsx'
 import { pipSendSocket } from '../socket/pipSendSocket.ts'
 import { pipGetSocket } from '../socket/pipGetSocket.ts'
+// import { Loading } from '../components/comps/Loading.tsx'
 
 export function MainPage() {
 
@@ -63,6 +64,7 @@ export function MainPage() {
   }
   else{
     return (
+      // <div style={{marginTop: '5vmax'}}><Loading /></div>
       <div style={{marginTop: '5vmax'}}>Loading...</div>
     )
   }

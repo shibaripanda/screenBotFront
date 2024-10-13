@@ -56,17 +56,13 @@ export function EventPage() {
     deleteEvent: async (event) => pipSendSocket('deleteEvent', {botId: bot._id, event: event})
   }
 
-  const handlers = {
-    backToAllBotsHandler: () => navigate(`/main`)
-  }
-
   if(bot && status){
     return (
       <div style={{width: '100%', marginTop: '0.5vmax', marginBottom: '3vmax', marginLeft: '0.5vmax', marginRight: '0.5vmax'}}>
 
           <Grid align="center">
             <Grid.Col span={2}>
-              <ButtonApp title='Back to all bots' handler={handlers.backToAllBotsHandler} />
+              <ButtonApp title='Back to all bots' handler={() => navigate(`/main`)} />
             </Grid.Col>
             <Grid.Col span={4}>
               <TextApp title='Events:' text={botName} />
@@ -75,7 +71,7 @@ export function EventPage() {
 
             </Grid.Col>
             <Grid.Col span={2}>
-                  
+              <TextApp title='' text={`${eventFilter.length} / ${events.length}`} />
             </Grid.Col>
             <Grid.Col span={2}>
               <TextInputApp placeholder='Event filter' value={filterEvents} handler={setFilterEvents}/>

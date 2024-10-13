@@ -3,32 +3,23 @@ import '@mantine/core/styles.css'
 import React, { useEffect, useMemo, useState } from 'react'
 import '../styles/App.css'
 import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
-import { SocketApt } from '../socket/api/socket-api.ts'
+// import { SocketApt } from '../socket/api/socket-api.ts'
 import { fix } from '../fix/fix.js'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Grid, Group, Switch, Text, TextInput } from '@mantine/core'
+import { Grid, Switch } from '@mantine/core'
 import { UserList } from '../components/monitor/UserList.tsx'
 import { ModalSendMessageGroup } from '../components/monitor/ModalSendMessageGroup.tsx'
 import { GroupListMenu } from '../components/monitor/GroupListMenu.tsx'
+import { pipGetSocket } from '../socket/pipGetSocket.ts'
+import { pipSendSocket } from '../socket/pipSendSocket.ts'
+import { ButtonApp } from '../components/comps/ButtonApp.tsx'
+import { TextApp } from '../components/comps/TextApp.tsx'
+import { TextInputApp } from '../components/comps/TextInputApp.tsx'
 
 export function MonitPage() {
   
   useConnectSocket()
 
-  SocketApt.socket?.on('getUsers', (data) => {
-    setUsers(data)
-  })
-  SocketApt.socket?.on('getScreens', async (data) => {
-    getScreens(await data.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
-  })
-  SocketApt.socket?.on('getContent', (data) => {
-    setContent(data)
-  })
-  SocketApt.socket?.on('getGroups', (data) => {
-    setGroups(data)
-  })
-  
-  
   const {botId} = useParams()
   const {botName} = useParams()
 
@@ -63,81 +54,65 @@ export function MonitPage() {
       window.location.assign(fix.appLink)
     }
     else{
-      SocketApt.socket.emit('getGroups', botId)
-      SocketApt.socket.emit('getContent', botId)
-      SocketApt.socket.emit('getUsers', botId)
-      SocketApt.socket.emit('getScreens', botId)
-      SocketApt.socket.emit('idForEditScreen', {botId: botId, screenId: ''})
+      const pipSocketListners = [
+        {pip: 'getUsers', handler: setUsers},
+        {pip: 'getScreens', handler: getScreens},
+        {pip: 'getContent', handler: setContent},
+        {pip: 'getGroups', handler: setGroups}
+      ]
+      pipGetSocket(pipSocketListners)
+
+      pipSendSocket('getGroups', botId)
+      pipSendSocket('getContent', botId)
+      pipSendSocket('getUsers', botId)
+      pipSendSocket('getScreens', botId)
+      pipSendSocket('idForEditScreen', {botId: botId, screenId: ''})
       setStatus(true)
     }
   }, [botId])
 
   const sendScreenToUser = (screenId, userId) => {
-    SocketApt.socket.emit('sendScreenToUser', {botId: botId, screenId: screenId, to: userId})
+    pipSendSocket('sendScreenToUser', {botId: botId, screenId: screenId, to: userId})
   }
   const sendTextToUser = (text, userId) => {
-    SocketApt.socket.emit('sendTextToUser', {botId: botId, text: text, to: userId})
+    pipSendSocket('sendTextToUser', {botId: botId, text: text, to: userId})
   }
   const sendContentToUser = (item, userId) => {
-    SocketApt.socket.emit('sendContentToUser', {botId: botId, userId: userId, content: item})
+    pipSendSocket('sendContentToUser', {botId: botId, userId: userId, content: item})
   }
   const createGroup = (group) => {
-    SocketApt.socket.emit('createGroup', {botId: botId, group: group})
+    pipSendSocket('createGroup', {botId: botId, group: group})
   }
   const deleteGroup = (group) => {
-    SocketApt.socket.emit('deleteGroup', {botId: botId, group: group})
+    pipSendSocket('deleteGroup', {botId: botId, group: group})
   }
   const renameGroup = (group, name) => {
-    SocketApt.socket.emit('renameGroup', {botId: botId, group: group, newName: name})
+    pipSendSocket('renameGroup', {botId: botId, group: group, newName: name})
   }
 
   const selected = () => {
     if(selectedRows.length){
       return (
-        <Button variant="default" size="xs" fullWidth
-              onClick={() => {
-                setSelectedRows([])
-              }}>
-              Unselect all
-        </Button>
+        <ButtonApp title={`Unselect all`} handler={() => setSelectedRows([])} />
       )
     }
     else if(!usersFilter.length){
       return (
-      <Button variant="default" size="xs" fullWidth
-              disabled={true}>
-              Select all
-      </Button>
+        <ButtonApp title={`Select all`} handler={() => {}} disabled={true} />
       )
     }
     return (
-      <Button variant="default" size="xs" fullWidth
-              onClick={() => {
-                const mes = []
-                for(let i of usersFilter){
-                  mes.push({id: i.id, username: i.username, status: i.activBot})
-                }
-                setSelectedRows(mes)
-              }}>
-              Select all
-      </Button>
+      <ButtonApp title={`Select all`} handler={handlers.setSelectedHandler} />
     )
   }
   const renameButAndInput = () => {
     if(rename){
       return (
-        <TextInput
-          size='xs'
-          placeholder={activGroup.name}
-          value={newGroupName}
-          onChange={(event) => {
-            setNewGroupName(event.currentTarget.value)
-          }}
-        />
+        <TextInputApp placeholder={activGroup.name} value={newGroupName} handler={setNewGroupName}/>
       )
     }
     return (
-      <Text>Group: {activGroup.name} ({activGroup.group.length})</Text>
+      <TextApp title='Group: ' text={`${activGroup.name} (${activGroup.group.length})`} />
     )
   }
   const renameButAndInput1 = () => {
@@ -145,35 +120,17 @@ export function MonitPage() {
       return (
         <Grid>
           <Grid.Col span={6}>
-            <Button variant="default" size="xs" fullWidth
-                onClick={() => {
-                  renameGroup(activGroup, newGroupName)
-                  setRename(false)
-                  setActivGroup([])
-                }}>
-                Save
-            </Button>
+            <ButtonApp title={`Save`} handler={handlers.saveNewGroupName} />
           </Grid.Col>
           <Grid.Col span={6}>
-            <Button variant="default" size="xs" fullWidth
-                onClick={() => {
-                  setRename(false)
-                  setNewGroupName('')
-                }}>
-                Cancel
-            </Button>
+            <ButtonApp title={`Cancel`} handler={handlers.cancelNewGroupName} />
           </Grid.Col>
         
         </Grid>
       )
     }
     return (
-      <Button variant="default" size="xs" fullWidth
-            onClick={() => {
-              setRename(true)
-            }}>
-            Rename group
-      </Button>
+      <ButtonApp title={`Rename group`} handler={() => setRename(true)} />
     )
   }
   const groupSettings = () => {
@@ -188,51 +145,67 @@ export function MonitPage() {
             {renameButAndInput1()}
           </Grid.Col>
           <Grid.Col span={2}>
-            <Button variant="default" size="xs" fullWidth
-              onClick={() => {
-                deleteGroup(activGroup)
-                setActivGroup([])
-              }}>
-              Delete group
-            </Button>
+            <ButtonApp title={`Delete group`} handler={handlers.deleteGroupHandler} />
           </Grid.Col>
         </Grid>
         <hr></hr>
         </>
       )
     }
-  } 
+  }
+  
+  const handlers = {
+    createGroupHandler: () => createGroup(selectedRows.map(item => item.id)),
+    deleteGroupHandler: () => {
+                  deleteGroup(activGroup)
+                  setActivGroup([])
+    },
+    saveNewGroupName: () => {
+                  renameGroup(activGroup, newGroupName)
+                  setRename(false)
+                  setActivGroup([])
+    },
+    cancelNewGroupName: () => {
+                  setRename(false)
+                  setNewGroupName('')
+    },
+    setSelectedHandler: () => {
+                  const mes = []
+                  for(let i of usersFilter){
+                    mes.push({id: i.id, username: i.username, status: i.activBot})
+                  }
+                  setSelectedRows(mes)
+    }
+  }
 
  
   if(users && status && screens.length){
     return (
       <div style={{width: '100%', marginTop: '0.5vmax', marginBottom: '3vmax', marginLeft: '0.5vmax', marginRight: '0.5vmax'}}>
-        <Group justify="space-between">
-          <Button variant="default" size="xs"
-            onClick={() => {
-            navigate(`/main`)
-            }}>
-            Back to all bots
-          </Button>
-          <Text fw={700} fz="md">Users: {botName}</Text>
-          <Switch
-            label="Only active users"
-            radius="lg"
-            color='green'
-            checked={checked}
-            onChange={(event) => {
-              setChecked(event.currentTarget.checked)
-            }}/>
-          <TextInput
-              size='xs'
-              placeholder="filter"
-              value={filter}
+        <Grid align="center">
+            <Grid.Col span={2}>
+              <ButtonApp title='Back to all bots' handler={() => navigate(`/main`)} />
+            </Grid.Col>
+            <Grid.Col span={4}>
+              <TextApp title='Users: ' text={botName} />
+            </Grid.Col>
+            <Grid.Col span={2}>
+              <Switch
+              label="Only active users"
+              radius="lg"
+              color='green'
+              checked={checked}
               onChange={(event) => {
-                setFilter(event.currentTarget.value)
-              }}
-          />
-          <Text>{usersFilter.length} / {users.length}</Text>
-        </Group>
+                setChecked(event.currentTarget.checked)
+              }}/>
+            </Grid.Col>
+            <Grid.Col span={2}>
+              <TextInputApp placeholder='Users filter' value={filter} handler={setFilter}/>
+            </Grid.Col>
+            <Grid.Col span={2}>
+              <TextApp title='' text={`${usersFilter.length} / ${users.length}`} />
+            </Grid.Col>
+          </Grid>
 
         <hr color='grey' width='1' style={{marginTop: '0.5vmax'}}></hr>
 
@@ -244,34 +217,16 @@ export function MonitPage() {
             <GroupListMenu deleteGroup={deleteGroup} groups={groups} setActivGroup={setActivGroup} activGroup={activGroup}/>
           </Grid.Col>
           <Grid.Col span={2}>
-            <Button variant="default" size="xs" fullWidth
-              disabled={!selectedRows.length}
-              onClick={() => {
-                createGroup(selectedRows.map(item => item.id))
-              }}>
-              Greate group ({selectedRows.length})
-            </Button>
+            <ButtonApp title={`Greate group (${selectedRows.length})`} handler={handlers.createGroupHandler} disabled={!selectedRows.length}/>
           </Grid.Col>
           <Grid.Col span={2}>
             <ModalSendMessageGroup selectedRows={selectedRows} sendContentToUser={sendContentToUser} content={content} screens={screens} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser}/>
           </Grid.Col>
           <Grid.Col span={2}>
-            <Button variant="default" size="xs" fullWidth
-              disabled={true}
-              onClick={() => {
-                
-              }}>
-              Create task
-            </Button>
+            <ButtonApp title={`Create task`} handler={()=> {}} disabled={true}/>
           </Grid.Col>
           <Grid.Col span={2}>
-            <Button variant="default" size="xs" fullWidth
-              disabled={true}
-              onClick={() => {
-                
-              }}>
-              Download XLS
-            </Button>
+            <ButtonApp title={`Download XLS`} handler={()=> {}} disabled={true}/>
           </Grid.Col>
         </Grid>
 
