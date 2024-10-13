@@ -2,6 +2,7 @@ import io, { Socket } from 'socket.io-client'
 import { fix } from '../../fix/fix'
 
 export class SocketApt {
+
     static socket: null | Socket = null
 
     static createConnections(): void {
@@ -13,10 +14,6 @@ export class SocketApt {
 
         this.socket.on('disconnect', () => {
             console.log('disconnect')
-        })
-
-        this.socket.on('res', (data) => {
-            console.log(data)
         })
 
         this.socket.on('exception', (data) => {

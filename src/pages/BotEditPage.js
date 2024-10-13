@@ -3,12 +3,13 @@ import '@mantine/core/styles.css'
 import { useEffect, useMemo, useState } from 'react'
 import '../styles/App.css'
 import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
-import { SocketApt } from '../socket/api/socket-api.ts'
 import { fix } from '../fix/fix.js'
 import { useParams } from 'react-router-dom'
 import { FindScreenForm } from '../components/botedit/screenList/FindScreenForm.tsx'
 import { ScreenItem } from '../components/botedit/screenList/ScreenItem.tsx'
 import { Grid } from '@mantine/core'
+import { pipGetSocket } from '../socket/pipGetSocket.ts'
+import { pipSendSocket } from '../socket/pipSendSocket.ts'
 
 export function BotEditPage() {
 
@@ -22,22 +23,24 @@ export function BotEditPage() {
   const [status, setStatus] = useState(false)
   const [spScreen, setSpScreen] = useState('')
 
-
-  SocketApt.socket?.on('getBot', (data) => {
-    setBot(data)
-  })
-  SocketApt.socket?.on('getScreens', async (data) => {
+  const reverseScreens = async (data) => {
     getScreens(await data.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
-  })
+  }
 
   useEffect(() => {
     if(!sessionStorage.getItem('token')){
       window.location.assign(fix.appLink)
     }
     else{
-      SocketApt.socket.emit('idForEditScreen', {botId: botId, screenId: ''})
-      SocketApt.socket.emit('getBot', botId)
-      SocketApt.socket.emit('getScreens', botId)
+      const pipSocketListners = [
+        {pip: 'getBot', handler: setBot},
+        {pip: 'getScreens', handler: reverseScreens}
+      ]
+      pipGetSocket(pipSocketListners)
+
+      pipSendSocket('idForEditScreen', {botId: botId, screenId: ''})
+      pipSendSocket('getBot', botId)
+      pipSendSocket('getScreens', botId)
       setStatus(true)
     }
   }, [botId])
@@ -49,43 +52,43 @@ export function BotEditPage() {
 
 
   const protectScrreen = (screenId, status) => {
-    SocketApt.socket.emit('protectScrreen', {botId: bot._id, status: status, screenId: screenId})
+    pipSendSocket('protectScrreen', {botId: bot._id, status: status, screenId: screenId})
     screens[screens.findIndex(item => item._id === screenId)].protect = status
     getScreens(screens)
   }
   const clearScreen = async (screenId) => {
-    SocketApt.socket.emit('clearScreen', {botId: bot._id, screenId: screenId})
+    pipSendSocket('clearScreen', {botId: bot._id, screenId: screenId})
   }
   const copyScreen = async (screenId) => {
-    SocketApt.socket.emit('copyScreen', {botId: bot._id, screenId: screenId})
+    pipSendSocket('copyScreen', {botId: bot._id, screenId: screenId})
   }
   const deleteScreen = async (screenId) => {
-    SocketApt.socket.emit('deleteScreen', screenId)
+    pipSendSocket('deleteScreen', screenId)
     getScreens(screens.filter(item => item._id !== screenId))
   }
   const editButtons = async (screenId, buttons) => {
-    SocketApt.socket.emit('editButtons', {botId: bot._id, screenId: screenId, buttons: buttons})
+    pipSendSocket('editButtons', {botId: bot._id, screenId: screenId, buttons: buttons})
   }
   const editScreenName = async (screenId, name) => {
-    SocketApt.socket.emit('editScreenName', {botId: bot._id, screenId: screenId, name: name})
+    pipSendSocket('editScreenName', {botId: bot._id, screenId: screenId, name: name})
   }
   const createScreen = async (newScreenName) => {
-    SocketApt.socket.emit('createNewScreen', {botId: bot._id, screenName: newScreenName})
+    pipSendSocket('createNewScreen', {botId: bot._id, screenName: newScreenName})
   }
   const updateVariable = async (screenId, variable) => {
-    SocketApt.socket.emit('updateVariable', {botId: bot._id, screenId: screenId, variable: variable})
+    pipSendSocket('updateVariable', {botId: bot._id, screenId: screenId, variable: variable})
   }
   const screenForAnswer = (screenId, ansScreen) => {
-    SocketApt.socket.emit('screenForAnswer', {botId: bot._id, screenId: screenId, ansScreen: ansScreen})
+    pipSendSocket('screenForAnswer', {botId: bot._id, screenId: screenId, ansScreen: ansScreen})
   }
   const editScreen = (screenId) => {
-    SocketApt.socket.emit('idForEditScreen', {botId: bot._id, screenId: screenId})
+    pipSendSocket('idForEditScreen', {botId: bot._id, screenId: screenId})
   }
   const sendMeScreen = (screenId) => {
-    SocketApt.socket.emit('sendMeScreen', {botId: bot._id, screenId: screenId})
+    pipSendSocket('sendMeScreen', {botId: bot._id, screenId: screenId})
   }
   const deleteContentItem = async (screenId, content, index) => {
-    SocketApt.socket.emit('deleteContentItem', {botId: bot._id, screenId: screenId, content: content, index: index})
+    pipSendSocket('deleteContentItem', {botId: bot._id, screenId: screenId, content: content, index: index})
   }
 
   const loadingItem = () => {

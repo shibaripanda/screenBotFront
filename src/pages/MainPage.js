@@ -3,13 +3,11 @@ import '@mantine/core/styles.css'
 import { useEffect, useState } from 'react'
 import '../styles/App.css'
 import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
-// import { SocketApt } from '../socket/api/socket-api.ts'
 import { fix } from '../fix/fix.js'
 import { CreateNewBotForm } from '../components/main/CreateNewBotForm.tsx'
 import { BotItem } from '../components/main/BotItem.tsx'
 import { pipSendSocket } from '../socket/pipSendSocket.ts'
 import { pipGetSocket } from '../socket/pipGetSocket.ts'
-// import { Loading } from '../components/comps/Loading.tsx'
 
 export function MainPage() {
 
@@ -18,9 +16,9 @@ export function MainPage() {
   const [status, setStatus] = useState(false)
   const [bots, setBots] = useState(false)
 
-  // SocketApt.socket?.on('getMyBots', (data) => {
-  //   setBots(data.sort((a ,b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
-  // })
+  const reverseBots = async (data) => {
+    setBots(await data.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
+  }
 
   useEffect(() => {
     if(!sessionStorage.getItem('token')){
@@ -28,7 +26,7 @@ export function MainPage() {
     }
     else{
       const pipSocketListners = [
-        {pip: 'getMyBots', handler: setBots},
+        {pip: 'getMyBots', handler: reverseBots},
       ]
       pipGetSocket(pipSocketListners)
       pipSendSocket('getMyBots')
@@ -64,7 +62,6 @@ export function MainPage() {
   }
   else{
     return (
-      // <div style={{marginTop: '5vmax'}}><Loading /></div>
       <div style={{marginTop: '5vmax'}}>Loading...</div>
     )
   }

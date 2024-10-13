@@ -1,17 +1,23 @@
 import { Button } from "@mantine/core"
 import React from "react"
 
-export const ButtonApp = ({handler, title, disabled}) => {
+export const ButtonApp = (props) => {
+
+    const colorVariant = () => {
+        if(props.color) return ''
+        return 'default'
+    }
 
     return (
         <Button
             fullWidth 
-            variant="default" 
+            variant={colorVariant()} 
             size="xs"
-            disabled={disabled ? disabled : false}
-            onClick={handler}
+            color={props.color}
+            disabled={props.disabled ? props.disabled : false}
+            onClick={props.handler}
         >
-            {title}
+            {props.title}
         </Button>
     )
 

@@ -3,10 +3,9 @@ import '@mantine/core/styles.css'
 import React, { useEffect, useMemo, useState } from 'react'
 import '../styles/App.css'
 import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
-// import { SocketApt } from '../socket/api/socket-api.ts'
 import { fix } from '../fix/fix.js'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Grid, Switch } from '@mantine/core'
+import { Center, Grid, Switch } from '@mantine/core'
 import { UserList } from '../components/monitor/UserList.tsx'
 import { ModalSendMessageGroup } from '../components/monitor/ModalSendMessageGroup.tsx'
 import { GroupListMenu } from '../components/monitor/GroupListMenu.tsx'
@@ -120,7 +119,7 @@ export function MonitPage() {
       return (
         <Grid>
           <Grid.Col span={6}>
-            <ButtonApp title={`Save`} handler={handlers.saveNewGroupName} />
+            <ButtonApp title={`Save`} handler={handlers.saveNewGroupName} disabled={!newGroupName}/>
           </Grid.Col>
           <Grid.Col span={6}>
             <ButtonApp title={`Cancel`} handler={handlers.cancelNewGroupName} />
@@ -184,30 +183,36 @@ export function MonitPage() {
       <div style={{width: '100%', marginTop: '0.5vmax', marginBottom: '3vmax', marginLeft: '0.5vmax', marginRight: '0.5vmax'}}>
         <Grid align="center">
             <Grid.Col span={2}>
-              <ButtonApp title='Back to all bots' handler={() => navigate(`/main`)} />
+              <ButtonApp title='Back to all bots' handler={() => navigate(`/main`)}  color='grey'/>
             </Grid.Col>
-            <Grid.Col span={4}>
-              <TextApp title='Users: ' text={botName} />
+            <Grid.Col span={3}>
+              <Center>
+                <TextApp title='Users: ' text={botName} />
+              </Center>
             </Grid.Col>
-            <Grid.Col span={2}>
-              <Switch
-              label="Only active users"
-              radius="lg"
-              color='green'
-              checked={checked}
-              onChange={(event) => {
-                setChecked(event.currentTarget.checked)
-              }}/>
+            <Grid.Col span={3.5}>
+              <Center>
+                <Switch
+                label="Only active users"
+                radius="lg"
+                color='green'
+                checked={checked}
+                onChange={(event) => {
+                  setChecked(event.currentTarget.checked)
+                }}/>
+              </Center>
+            </Grid.Col>
+            <Grid.Col span={1.5}>
+              <Center>
+                <TextApp title='' text={`${usersFilter.length} / ${users.length}`} /> 
+              </Center>
             </Grid.Col>
             <Grid.Col span={2}>
               <TextInputApp placeholder='Users filter' value={filter} handler={setFilter}/>
             </Grid.Col>
-            <Grid.Col span={2}>
-              <TextApp title='' text={`${usersFilter.length} / ${users.length}`} />
-            </Grid.Col>
           </Grid>
 
-        <hr color='grey' width='1' style={{marginTop: '0.5vmax'}}></hr>
+        <hr style={{marginTop: '0.5vmax'}}></hr>
 
         <Grid style={{marginTop: '0.5vmax', marginBottom: '0.5vmax'}}>
           <Grid.Col span={2}>
@@ -230,7 +235,7 @@ export function MonitPage() {
           </Grid.Col>
         </Grid>
 
-        <hr></hr>
+        {/* <hr></hr> */}
 
         {groupSettings()}
         <UserList setSelectedRows={setSelectedRows} selectedRows={selectedRows} content={content} data={usersFilter} screens={screens} sendScreenToUser={sendScreenToUser} sendTextToUser={sendTextToUser} sendContentToUser={sendContentToUser}/>

@@ -5,7 +5,7 @@ import '../styles/App.css'
 import { useConnectSocket } from '../socket/hooks/useConnectSocket.ts'
 import { fix } from '../fix/fix.js'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Grid } from '@mantine/core'
+import { Center, Grid } from '@mantine/core'
 import { EventItem } from '../components/events/EventItem.tsx'
 // import { ModalCreateEventOneTime } from '../components/events/ModalCreateEventOneTime.tsx'
 import { ModalCreateEventPermament } from '../components/events/ModalCreateEventPermament.tsx'
@@ -62,23 +62,26 @@ export function EventPage() {
 
           <Grid align="center">
             <Grid.Col span={2}>
-              <ButtonApp title='Back to all bots' handler={() => navigate(`/main`)} />
+              <ButtonApp title='Back to all bots' handler={() => navigate(`/main`)} color='grey'/>
             </Grid.Col>
-            <Grid.Col span={4}>
-              <TextApp title='Events:' text={botName} />
+            <Grid.Col span={3}>
+              <Center>
+                <TextApp title='Events:' text={botName} />
+              </Center>
             </Grid.Col>
-            <Grid.Col span={2}>
-
+            <Grid.Col span={3.5}>
             </Grid.Col>
-            <Grid.Col span={2}>
-              <TextApp title='' text={`${eventFilter.length} / ${events.length}`} />
+            <Grid.Col span={1.5}>
+              <Center>
+                <TextApp title='' text={`${eventFilter.length} / ${events.length}`} />
+              </Center>
             </Grid.Col>
             <Grid.Col span={2}>
               <TextInputApp placeholder='Event filter' value={filterEvents} handler={setFilterEvents}/>
             </Grid.Col>
           </Grid>
 
-        <hr color='grey' width='1' style={{marginTop: '0.5vmax'}}></hr>
+        <hr style={{marginTop: '0.5vmax'}}></hr>
 
         <Grid style={{marginTop: '0.5vmax', marginBottom: '0.5vmax'}}>
           <Grid.Col span={2}>
@@ -89,7 +92,7 @@ export function EventPage() {
           </Grid.Col> */}
         </Grid>
 
-        <hr style={{marginBottom: '1vmax'}}></hr>
+        {/* <hr style={{marginBottom: '1vmax'}}></hr> */}
         <Grid>
           {eventFilter.map((item, index ) => <Grid.Col key={index} span={4}>
             <EventItem 

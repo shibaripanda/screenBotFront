@@ -1,15 +1,16 @@
 import { TextInput } from "@mantine/core"
 import React from "react"
 
-export const TextInputApp = ({placeholder, value, handler}) => {
+export const TextInputApp = (props) => {
 
     return (
         <TextInput
+           label={props.label}
            size='xs'
-           placeholder={placeholder}
-           value={value}
+           placeholder={props.placeholder}
+           value={props.value}
            onChange={(event) => {
-            handler(event.currentTarget.value)
+            props.handler(event.currentTarget.value)
           }}
        />
    )
