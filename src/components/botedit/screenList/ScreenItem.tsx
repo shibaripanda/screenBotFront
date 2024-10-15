@@ -2,7 +2,7 @@ import { Button, Paper, Text, Group, TextInput } from '@mantine/core';
 import React, { useState } from 'react'
 import { ModalCreateScreen } from './ModalCreateScreen.tsx'
 
-export function ScreenItem({deleteContentItem, editScreenName, copyScreen, screenForAnswer, updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, bot, screen, deleteScreen, sendMeScreen}) {
+export function ScreenItem({addContentItem, content, deleteContentItem, editScreenName, copyScreen, screenForAnswer, updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, bot, screen, deleteScreen, sendMeScreen}) {
 
   const [deleteValue, setDeleteValue] = useState('')
 
@@ -93,7 +93,8 @@ export function ScreenItem({deleteContentItem, editScreenName, copyScreen, scree
             <Text c="dimmed" fz="md">
               {`❗️⚠️ Content your sent to the ${bot.name} will be added to this screen ⚠️❗️`}
             </Text>
-          } 
+          }
+          content={content} 
           screen={screen}
           editScreen={editScreen} 
           sendMeScreen={sendMeScreen}
@@ -105,6 +106,7 @@ export function ScreenItem({deleteContentItem, editScreenName, copyScreen, scree
           screenForAnswer={screenForAnswer}
           editScreenName={editScreenName}
           deleteContentItem={deleteContentItem}
+          addContentItem={addContentItem}
         />
         <Button variant="default" size="xs"
           onClick={() => {

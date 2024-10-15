@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useDisclosure } from '@mantine/hooks'
-import { Modal, Button, Text, Group, Switch, Grid, Spoiler, Tooltip, TextInput, Autocomplete, Image } from '@mantine/core'
+import { Modal, Button, Text, Group, Switch, Grid, Spoiler, Tooltip, TextInput, Autocomplete, Image, Select } from '@mantine/core'
+import { ButtonApp } from '../../comps/ButtonApp.tsx'
 
-export function ModalCreateScreen({deleteContentItem, editScreenName, screenForAnswer, updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, modalTitle, screen, sendMeScreen}) {
+export function ModalCreateScreen({addContentItem, content, deleteContentItem, editScreenName, screenForAnswer, updateVariable, screens, editButtons, clearScreen, protectScrreen, editScreen, modalTitle, screen, sendMeScreen}) {
 
   const [opened, { open, close }] = useDisclosure(false)
   const [checked, setChecked] = useState(screen.protect)
@@ -15,6 +16,8 @@ export function ModalCreateScreen({deleteContentItem, editScreenName, screenForA
   const [screenIfAnswer, setScreenIfAnswer] = useState('')
   const [screenName, setScreenName] = useState(screen.name)
   const [modeEditName, setModeEditName] = useState(false)
+  const [exContent, setExContent] = useState('')
+  
 
   const addOrDeleteButton = (but: object, obj: any) => {
     if(but['to'] === 'addNewBut'){
@@ -398,15 +401,9 @@ export function ModalCreateScreen({deleteContentItem, editScreenName, screenForA
             <td>
               <Text c="dimmed" fz="md">
                 Media: 
-                </Text> 
-                <Button 
-                  variant="default" 
-                  size="xs"
-                  onClick={() => {
-                  }}>
-                    Add existing
-                </Button>
-                <hr style={{marginTop: '0.5vmax'}}></hr></td>
+                </Text>
+                {/* <hr style={{marginTop: '0.5vmax'}}></hr> */}
+                </td>
             <td>
               <Group gap="xs" style={{marginLeft: '1vmax'}} >
                   {screen.media.map((item, index) =>
@@ -420,14 +417,8 @@ export function ModalCreateScreen({deleteContentItem, editScreenName, screenForA
             <td><Text c="dimmed" fz="md">
               Documents:
               </Text>
-              <Button 
-                  variant="default" 
-                  size="xs"
-                  onClick={() => {
-                  }}>
-                    Add existing
-                </Button>
-                <hr style={{marginTop: '0.5vmax'}}></hr></td>
+                {/* <hr style={{marginTop: '0.5vmax'}}></hr> */}
+                </td>
             <td>
             <Group gap="xs" style={{marginLeft: '1vmax'}} >
               {screen.document.map((item, index) =>
@@ -446,14 +437,8 @@ export function ModalCreateScreen({deleteContentItem, editScreenName, screenForA
             <td><Text c="dimmed" fz="md">
               Audio:
               </Text>
-              <Button 
-                  variant="default" 
-                  size="xs"
-                  onClick={() => {
-                  }}>
-                    Add existing
-                </Button>
-                <hr style={{marginTop: '0.5vmax'}}></hr></td>
+                {/* <hr style={{marginTop: '0.5vmax'}}></hr> */}
+                </td>
             <td>
             <Group gap="xs" style={{marginLeft: '1vmax'}} >
               {screen.audio.map((item, index) => 
@@ -472,14 +457,35 @@ export function ModalCreateScreen({deleteContentItem, editScreenName, screenForA
         </table>
 
         {textSize()}
-        <Button 
-          variant="default" 
-          size="xs"
-          onClick={() => {
-          }}>
-            Set existing
-        </Button>
-        <hr style={{marginTop: '0.5vmax'}}></hr>
+        <hr style={{marginTop: '0.5vmax', marginBottom: '1vmax'}}></hr>
+        <Grid align='center'>
+          <Grid.Col span={2}>
+            <ButtonApp title='Add existing content' disabled={!exContent} handler={() => {
+              addContentItem(screen._id, exContent)
+              // setExContent('')
+              }} />
+          </Grid.Col>
+          <Grid.Col span={4}>
+            <Select
+              size='xs'
+              clearable
+              searchable
+              data={
+                content.map((item, index)=> ({label: (item.tx ? item.tx : 'noname') + ' ( ' + item.type + ' )', value: index.toString(), data: item}))
+              }
+              // value={exContent}
+              onChange={(_value, option) => {
+                console.log(_value)
+                console.log(option)
+                if(option) setExContent(option['data'])
+                else setExContent('')
+              }}
+            />
+          </Grid.Col>
+        </Grid>
+        
+        
+
 
         <div style={{marginTop: '3vmax'}} >
           <TextInput

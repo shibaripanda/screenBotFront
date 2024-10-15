@@ -22,6 +22,7 @@ export function BotEditPage() {
   const [filterScreens, setFilterScreens] = useState('')
   const [status, setStatus] = useState(false)
   const [spScreen, setSpScreen] = useState('')
+  const [content, setContent] = useState([])
 
   const reverseScreens = async (data) => {
     getScreens(await data.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)))
@@ -34,11 +35,13 @@ export function BotEditPage() {
     else{
       const pipSocketListners = [
         {pip: 'getBot', handler: setBot},
-        {pip: 'getScreens', handler: reverseScreens}
+        {pip: 'getScreens', handler: reverseScreens},
+        {pip: 'getContent', handler: setContent}
       ]
       pipGetSocket(pipSocketListners)
 
       pipSendSocket('idForEditScreen', {botId: botId, screenId: ''})
+      pipSendSocket('getContent', botId)
       pipSendSocket('getBot', botId)
       pipSendSocket('getScreens', botId)
       setStatus(true)
@@ -90,6 +93,9 @@ export function BotEditPage() {
   const deleteContentItem = async (screenId, content, index) => {
     pipSendSocket('deleteContentItem', {botId: bot._id, screenId: screenId, content: content, index: index})
   }
+  const addContentItem = async (screenId, content) => {
+    pipSendSocket('addContentItem', {botId: bot._id, screenId: screenId, content: content})
+  }
 
   const loadingItem = () => {
     if(screens.length){
@@ -97,6 +103,7 @@ export function BotEditPage() {
         screenFilter.map((item, index) => 
           <Grid.Col span={4} key={index}>
             <ScreenItem
+              content={content}
               screens={screens}
               protectScrreen={protectScrreen} 
               editScreen={editScreen} 
@@ -110,7 +117,8 @@ export function BotEditPage() {
               screenForAnswer={screenForAnswer}
               copyScreen={copyScreen}
               editScreenName={editScreenName}
-              deleteContentItem={deleteContentItem} 
+              deleteContentItem={deleteContentItem}
+              addContentItem={addContentItem} 
             />
           </Grid.Col>)
       )
