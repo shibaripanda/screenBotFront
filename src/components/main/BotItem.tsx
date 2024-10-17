@@ -90,6 +90,7 @@ export function BotItem({bot, deleteBot, offBot, onBot}) {
         </Grid.Col>
         <Grid.Col span={2.5}>
           <Button variant="default" size="xs" fullWidth
+                    // disabled={true}
                     disabled={!bot.status} 
                     onClick={() => {
                       navigate(`/event/${bot._id}/${bot.name} (@${bot.username})`)

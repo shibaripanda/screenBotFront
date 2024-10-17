@@ -55,7 +55,7 @@ export function FindScreenForm({spScreen, setSpScreen, screenFilterLength, bot, 
                     </Button>
                 </Grid.Col>
                 <Grid.Col span={6} key={2}>
-                    <SpesialListMenu spScreen={spScreen} setSpScreen={setSpScreen} activButtonCreateScreen={activButtonCreateScreen}/>
+                    {/* <SpesialListMenu spScreen={spScreen} setSpScreen={setSpScreen} activButtonCreateScreen={activButtonCreateScreen}/> */}
                     {/* <Button variant="default" fullWidth
                         size='xs' 
                         disabled={activButtonCreateScreen()}
