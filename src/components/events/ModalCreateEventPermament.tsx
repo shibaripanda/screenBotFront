@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useDisclosure } from '@mantine/hooks'
-import { Modal, Grid, Paper } from '@mantine/core'
+import { Modal, Grid, Paper, Input, TextInput } from '@mantine/core'
 import { ButtonApp } from '../comps/ButtonApp.tsx'
 import { TextInputApp } from '../comps/TextInputApp.tsx'
+import { TimeInput } from '@mantine/dates'
 
 export function ModalCreateEventPermament({event}) {
 
@@ -13,6 +14,9 @@ export function ModalCreateEventPermament({event}) {
   const [startTime, setStartTime] = useState({h: 9, m: 0, index: 'pm'})
   const [countOfEvents, setCountOfEvents] = useState(1)
   const [daysOfWeek, setDaysOfWeek] = useState([0, 1, 2, 3, 4, 5])
+
+  const [timeStart, setTimeStart] = useState('')
+  const [timeEnd, setTimeEnd] = useState('')
 
   // const createEventHandler = () => {
   //   createEvent({name: eventName})
@@ -55,8 +59,71 @@ export function ModalCreateEventPermament({event}) {
           </Grid.Col>
           <Grid.Col span={12}>
              <Paper withBorder p="lg" radius="md" shadow="md">
+              <Grid>
+                <Grid.Col span={4}>
+                  <TimeInput
+                    value={timeStart}
+                    onChange={(event) => setTimeStart(event.currentTarget.value)}
+                    size="xs"
+                    radius="md"
+                    label="Start event"
+                    withAsterisk
+                  />
+                </Grid.Col>
+                <Grid.Col span={4}>
+                  <TimeInput
+                    value={timeEnd}
+                    onChange={(event) => {
+                      console.log(event.currentTarget.value)
+                      if(timeEnd.split(':').length === 2){
+                        const eT: any = timeEnd.split(':')[0] * 60 + timeEnd.split(':')[1] * 1
+                        const sT: any = timeStart.split(':')[0] * 60 + timeStart.split(':')[1] * 1
 
+                        if(sT < eT) setTimeEnd('')
+                        else setTimeEnd(event.currentTarget.value)
+                      }
+
+                      
+                    }}
+                    disabled={!timeStart}
+                    size="xs"
+                    radius="md"
+                    label="End event"
+                    withAsterisk
+                  />
+                </Grid.Col>
+                <Grid.Col span={4}>
+                  <TextInput
+                    size="xs"
+                    radius="md"
+                    label="Duration of break in minutes after the event"
+                  />
+                </Grid.Col>
+              </Grid>
+             
              </Paper>
+          </Grid.Col>
+          <Grid.Col span={12}>
+            <Grid>
+              <Grid.Col span={2}>
+                <ButtonApp title={'Add event'}/>
+              </Grid.Col>
+              <Grid.Col span={2}>
+                
+              </Grid.Col>
+              <Grid.Col span={2}>
+                
+              </Grid.Col>
+              <Grid.Col span={2}>
+                
+              </Grid.Col>
+              <Grid.Col span={2}>
+                
+              </Grid.Col>
+              <Grid.Col span={2}>
+                <ButtonApp title={'Save'}/>
+              </Grid.Col>
+            </Grid>
           </Grid.Col>
         </Grid>
      
