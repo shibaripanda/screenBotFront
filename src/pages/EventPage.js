@@ -89,7 +89,23 @@ export function EventPage() {
             <TextInputApp value={eventName} placeholder={'Event name'} handler={setEventName} />
           </Grid.Col>
           <Grid.Col span={2}>
-            <ButtonApp title='Create a new multi-event' handler={() => {func.createEvent({name: eventName}); setEventName('')}} disabled={!eventName}/>
+            <ButtonApp 
+            title='Create a new multi-event' 
+            handler={() => {
+              func.createEvent({
+                name: eventName, 
+                slots:[
+                  {slotId: Date.now(), 
+                    startTime: '09:00', 
+                    duration: 45, 
+                    break: 15, 
+                    clients: [], 
+                    maxClients: 1}
+                  ]
+              })
+              setEventName('')
+            }} 
+            disabled={!eventName}/>
           </Grid.Col>
           <Grid.Col span={2}>
             <ButtonApp title='Create a new one-time-event' handler={() => {func.createEvent({name: eventName}); setEventName('')}} disabled={!eventName}/>
@@ -98,7 +114,8 @@ export function EventPage() {
 
         <Grid>
           {eventFilter.map((item, index ) => <Grid.Col key={index} span={4}>
-            <EventItem 
+            <EventItem
+              // setEvents={setEvents} 
               event={item} 
               deleteEvent={func.deleteEvent}
             />
