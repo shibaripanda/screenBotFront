@@ -113,10 +113,12 @@ export function EventPage() {
         </Grid>
 
         <Grid>
-          {eventFilter.map((item, index ) => <Grid.Col key={index} span={4}>
+          {eventFilter.map((item, index) => <Grid.Col span={4}>
             <EventItem
-              // setEvents={setEvents} 
-              event={item} 
+              key={index}
+              events={events} 
+              setEvents={setEvents} 
+              oneEvent={item} 
               deleteEvent={func.deleteEvent}
             />
             </Grid.Col>)}

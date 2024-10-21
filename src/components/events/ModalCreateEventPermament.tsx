@@ -1,32 +1,33 @@
 import React, { useState } from 'react'
 import { useDisclosure } from '@mantine/hooks'
-import { Modal, Grid, Paper, Input, TextInput } from '@mantine/core'
+import { Modal, Grid, Paper, TextInput } from '@mantine/core'
 import { ButtonApp } from '../comps/ButtonApp.tsx'
 import { TextInputApp } from '../comps/TextInputApp.tsx'
 import { TimeInput } from '@mantine/dates'
 
-export function ModalCreateEventPermament({event}) {
+export function ModalCreateEventPermament({oneEvent, setEvents, events}) {
 
   const [opened, { open, close }] = useDisclosure(false)
-  const [eventName, setEventName] = useState(event.name)
-  const [editEvent, setEditEvent] = useState(event)
-  // const [lengthOfEventMin, setLengthOfEventMin] = useState(45)
-  // const [lengthOfPauseMin, setLengthOfPauseMin] = useState(0)
-  // const [startTime, setStartTime] = useState({h: 9, m: 0, index: 'pm'})
-  // const [countOfEvents, setCountOfEvents] = useState(1)
-  // const [daysOfWeek, setDaysOfWeek] = useState([0, 1, 2, 3, 4, 5])
+  const [eventName, setEventName] = useState(oneEvent.name)
+  const [indexEvent] = useState(events.findIndex(item => item === oneEvent))
+  const [editedEvent, setEditedEvent] = useState(oneEvent)
 
-  // const [timeStart, setTimeStart] = useState('')
-  // const [timeEnd, setTimeEnd] = useState('')
 
-  const dayEvents = editEvent.slots.map((item, index) => 
+  const dayEvents = editedEvent.slots.map((item, index) => 
     <Grid.Col key={index} span={12}>
       <Paper withBorder p="lg" radius="md" shadow="md">
         <Grid>
           <Grid.Col span={4}>
           <TimeInput
             value={item.startTime}
-            onChange={(event) => setEditEvent( {... editEvent, slots: [...editEvent.slots,]} event.currentTarget.value)}
+            onChange={(event) => {
+              console.log(event.currentTarget.value)
+              console.log(indexEvent)
+              console.log(events[indexEvent].slots[events[indexEvent].slots.findIndex(slot => slot.eventId === item.eventId)])
+              events[indexEvent].slots[events[indexEvent].slots.findIndex(slot => slot.eventId === item.eventId)].startTime = event.currentTarget.value
+              // setEvents(events)
+              setEditedEvent(events[indexEvent])
+            }}
             size="xs"
             radius="md"
             label="Start event"
@@ -35,6 +36,9 @@ export function ModalCreateEventPermament({event}) {
           </Grid.Col>
           <Grid.Col span={4}>
             <TextInput
+              onChange={(event) => {
+                oneEvent.slots[oneEvent.slots.findIndex(slot => slot.duration === item.duration)].startTime = event.currentTarget.value
+              }}
               value={item.duration}
               size="xs"
               radius="md"
@@ -43,6 +47,9 @@ export function ModalCreateEventPermament({event}) {
           </Grid.Col>
           <Grid.Col span={4}>
             <TextInput
+              onChange={(event) => {
+                oneEvent.slots[oneEvent.slots.findIndex(slot => slot.break === item.break)].startTime = event.currentTarget.value
+              }}
               value={item.break}
               size="xs"
               radius="md"
@@ -60,7 +67,7 @@ export function ModalCreateEventPermament({event}) {
         onClose={() => {
             setTimeout(() => {close()}, )
             }}
-        title={event.name}
+        title={oneEvent.name}
       >
         <Grid>
           <Grid.Col span={6}>

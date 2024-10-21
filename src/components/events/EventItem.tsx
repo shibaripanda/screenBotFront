@@ -3,21 +3,17 @@ import React from 'react'
 import { ButtonApp } from '../comps/ButtonApp.tsx';
 import { ModalCreateEventPermament } from './ModalCreateEventPermament.tsx';
 
-export function EventItem({event, deleteEvent}) {
-
-  const deleteEventHandler = () => {
-    deleteEvent(event)
-  }
+export function EventItem({oneEvent, deleteEvent, setEvents, events}) {
 
   const buttonsSection = [
-    <ModalCreateEventPermament event={event} />,
-    <ButtonApp title='Delete' handler={deleteEventHandler} disabled={false} color={'red'}/>
+    <ModalCreateEventPermament oneEvent={oneEvent} setEvents={setEvents} events={events}/>,
+    <ButtonApp title='Delete' handler={() => deleteEvent(oneEvent)} disabled={false} color={'red'}/>
   ]
 
   return (
     <Paper withBorder p="lg" radius="md" shadow="md">
       <Group justify="space-between" mb="xs">
-        <Text>{event.name}</Text>
+        <Text>{oneEvent.name}</Text>
       </Group>
 
       <Grid>
