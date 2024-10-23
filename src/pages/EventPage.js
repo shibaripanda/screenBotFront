@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Center, Grid } from '@mantine/core'
 import { EventItem } from '../components/events/EventItem.tsx'
 // import { ModalCreateEventOneTime } from '../components/events/ModalCreateEventOneTime.tsx'
-import { ModalCreateEventPermament } from '../components/events/ModalCreateEventPermament.tsx'
+// import { ModalCreateEventPermament } from '../components/events/ModalCreateEventPermament.tsx'
 import { ButtonApp } from '../components/comps/ButtonApp.tsx'
 import { TextApp } from '../components/comps/TextApp.tsx'
 import { TextInputApp } from '../components/comps/TextInputApp.tsx'
@@ -52,9 +52,23 @@ export function EventPage() {
     }, [filterEvents, events]
   )
 
+  const newEventModule = {
+    idEvent: Date.now() + 'Event',
+    name: eventName, 
+    slots:[{
+      idSlot: Date.now() + 'Slot', 
+      startTime: '09:00', 
+      duration: 45, 
+      break: 15, 
+      clients: [], 
+      maxClients: 1
+    }]
+  }
+  
   const func = {
-    createEvent: async (event) => pipSendSocket('createEvent', {botId: bot._id, event: event}),
-    deleteEvent: async (event) => pipSendSocket('deleteEvent', {botId: bot._id, event: event})
+    createEvent: async () => pipSendSocket('createEvent', {botId: bot._id, event: newEventModule}),
+    deleteEvent: async (event) => pipSendSocket('deleteEvent', {botId: bot._id, event: event}),
+    updateEventSlot: async (event, newEvent) => pipSendSocket('updateEventSlot', {botId: bot._id, event: event, newEvent: newEvent})
   }
 
   if(bot && status){
@@ -92,17 +106,7 @@ export function EventPage() {
             <ButtonApp 
             title='Create a new multi-event' 
             handler={() => {
-              func.createEvent({
-                name: eventName, 
-                slots:[
-                  {slotId: Date.now(), 
-                    startTime: '09:00', 
-                    duration: 45, 
-                    break: 15, 
-                    clients: [], 
-                    maxClients: 1}
-                  ]
-              })
+              func.createEvent()
               setEventName('')
             }} 
             disabled={!eventName}/>
