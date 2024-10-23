@@ -9,11 +9,11 @@ export function ModalCreateEventPermament({oneEvent, setEvents, events}) {
 
   const [opened, { open, close }] = useDisclosure(false)
   const [eventName, setEventName] = useState(oneEvent.name)
-  const [indexEvent] = useState(events.findIndex(item => item === oneEvent))
-  const [editedEvent, setEditedEvent] = useState(oneEvent)
+  // const [editedEvent, setEditedEvent] = useState(structuredClone(oneEvent))
 
+  // console.log(editedEvent)
 
-  const dayEvents = editedEvent.slots.map((item, index) => 
+  const dayEvents = oneEvent.slots.map((item, index) => 
     <Grid.Col key={index} span={12}>
       <Paper withBorder p="lg" radius="md" shadow="md">
         <Grid>
@@ -21,12 +21,9 @@ export function ModalCreateEventPermament({oneEvent, setEvents, events}) {
           <TimeInput
             value={item.startTime}
             onChange={(event) => {
-              console.log(event.currentTarget.value)
-              console.log(indexEvent)
-              console.log(events[indexEvent].slots[events[indexEvent].slots.findIndex(slot => slot.eventId === item.eventId)])
-              events[indexEvent].slots[events[indexEvent].slots.findIndex(slot => slot.eventId === item.eventId)].startTime = event.currentTarget.value
-              // setEvents(events)
-              setEditedEvent(events[indexEvent])
+              item.startTime = event.currentTarget.value
+              setEvents(events)
+              // setEditedEvent(events[indexEvent])
             }}
             size="xs"
             radius="md"
@@ -34,7 +31,7 @@ export function ModalCreateEventPermament({oneEvent, setEvents, events}) {
             withAsterisk
           />
           </Grid.Col>
-          <Grid.Col span={4}>
+          {/* <Grid.Col span={4}>
             <TextInput
               onChange={(event) => {
                 oneEvent.slots[oneEvent.slots.findIndex(slot => slot.duration === item.duration)].startTime = event.currentTarget.value
@@ -55,7 +52,7 @@ export function ModalCreateEventPermament({oneEvent, setEvents, events}) {
               radius="md"
               label="Duration of break after the event"
             />
-          </Grid.Col>
+          </Grid.Col> */}
         </Grid>
       </Paper>
     </Grid.Col>

@@ -45,7 +45,7 @@ export function EventPage() {
       pipSendSocket('getEvents', botId)
       setStatus(true)
     }
-  }, [botId])
+  }, [botId, events])
 
   const eventFilter = useMemo(() => {
       return events.filter(item => item.name.toLowerCase().includes(filterEvents.toLowerCase()))
@@ -117,9 +117,9 @@ export function EventPage() {
         </Grid>
 
         <Grid>
-          {eventFilter.map((item, index) => <Grid.Col span={4}>
+          {eventFilter.map((item, index) => <Grid.Col key={index} span={4}>
             <EventItem
-              key={index}
+              
               events={events} 
               setEvents={setEvents} 
               oneEvent={item} 
