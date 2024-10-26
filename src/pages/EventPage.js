@@ -17,13 +17,11 @@ import { pipSendSocket } from '../socket/pipSendSocket.ts'
 
 export function EventPage() {
 
+  const navigate = useNavigate()
   useConnectSocket()
-
   const {botId} = useParams()
   const {botName} = useParams()
 
-  const navigate = useNavigate()
-  
   const [bot, setBot] = useState(false)
   const [events, setEvents] = useState([])
   // const [newEventName, setNewEventName] = useState('')
@@ -68,7 +66,8 @@ export function EventPage() {
   const func = {
     createEvent: async () => pipSendSocket('createEvent', {botId: bot._id, event: newEventModule}),
     deleteEvent: async (event) => pipSendSocket('deleteEvent', {botId: bot._id, event: event}),
-    updateEventSlot: async (event, newEvent) => pipSendSocket('updateEventSlot', {botId: bot._id, event: event, newEvent: newEvent})
+    // updateEventSlot: async (event, newEvent) => pipSendSocket('updateEventSlot', {botId: bot._id, event: event, newEvent: newEvent}),
+    updateEvent: async (event, newEvent) => pipSendSocket('updateEvent', {botId: bot._id, event: event, newEvent: newEvent})
   }
 
   if(bot && status){
@@ -119,9 +118,7 @@ export function EventPage() {
         <Grid>
           {eventFilter.map((item, index) => <Grid.Col key={index} span={4}>
             <EventItem
-              
-              events={events} 
-              setEvents={setEvents} 
+              updateEvent={func.updateEvent}
               oneEvent={item} 
               deleteEvent={func.deleteEvent}
             />

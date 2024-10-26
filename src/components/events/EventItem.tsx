@@ -3,12 +3,12 @@ import React, { useState } from 'react'
 import { ButtonApp } from '../comps/ButtonApp.tsx';
 import { ModalCreateEventPermament } from './ModalCreateEventPermament.tsx';
 
-export function EventItem({oneEvent, deleteEvent, setEvents, events}) {
+export function EventItem({oneEvent, deleteEvent, updateEvent}) {
 
   // const [editedEvent, setEditedEvent] = useState(structuredClone(oneEvent))
 
   const buttonsSection = [
-    <ModalCreateEventPermament oneEvent={oneEvent} setEvents={setEvents} events={events}/>,
+    <ModalCreateEventPermament oneEvent={oneEvent} updateEvent={updateEvent} />,
     <ButtonApp title='Delete' handler={() => deleteEvent(oneEvent)} disabled={false} color={'red'}/>
   ]
 
