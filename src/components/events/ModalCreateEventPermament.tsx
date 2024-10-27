@@ -9,77 +9,120 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
 
   const [opened, { open, close }] = useDisclosure(false)
   const [eventName, setEventName] = useState(oneEvent.name)
-  const [time, setTime] = useState(oneEvent)
+  const [editedEvent] = useState(oneEvent)
   const [stat, setStat] = useState(0)
 
 
   const handlers = {
     addSlot: () => {
-      // const plusTime = () => {
-        const clock = time.slots[time.slots.length - 1].startTime.split(':')
-        let x = Number(clock[1]) + time.slots[time.slots.length - 1].duration + time.slots[time.slots.length - 1].break
-        // console.log(x)
-        const upH = Number(clock[0]) + Math.floor(x / 60)
-        const upM = x % 60
+      console.log(stat)
+      const clock = editedEvent.slots[editedEvent.slots.length - 1].startTime.split(':')
+      let x = Number(clock[1]) + editedEvent.slots[editedEvent.slots.length - 1].duration + editedEvent.slots[editedEvent.slots.length - 1].break
+      const upH = Number(clock[0]) + Math.floor(x / 60)
+      const upM = x % 60
 
-        const timeToTwoDigits = (digit) => {
-          if(digit.toString().length === 1){
-            return '0' + digit
-          }
-          return digit
+      const timeToTwoDigits = (digit: number) => {
+        if(digit.toString().length === 1){
+          return '0' + digit
         }
+        return digit
+      }
+      if(Number(timeToTwoDigits(upH)) < 24){
+        editedEvent.slots[editedEvent.slots.length] = structuredClone(editedEvent.slots[editedEvent.slots.length - 1])
+        editedEvent.slots[editedEvent.slots.length - 1].startTime = `${timeToTwoDigits(upH)}:${timeToTwoDigits(upM)}`
+        setStat(Date.now())
+      }
+    },
+    getTimeNextEvent: () => {
+      const clock = editedEvent.slots[editedEvent.slots.length - 1].startTime.split(':')
+      let x = Number(clock[1]) + editedEvent.slots[editedEvent.slots.length - 1].duration + editedEvent.slots[editedEvent.slots.length - 1].break
+      const upH = Number(clock[0]) + Math.floor(x / 60)
+      const upM = x % 60
 
-        // while(x - 60 > 0){
-        //   x = x - 60
-        //   console.log(x)
-        //   console.log(Number(clock[0]) + 1)
+      const timeToTwoDigits = (digit: number) => {
+        if(digit.toString().length === 1){
+          return '0' + digit
+        }
+        return digit
+      }
+      if(Number(timeToTwoDigits(upH)) < 24){
+        return (
+          <ButtonApp title={`Add slot ${timeToTwoDigits(upH)}:${timeToTwoDigits(upM)}`} handler={handlers.addSlot} />
+        )
+        // setStat(Date.now())
+      }
+      return (
+        <ButtonApp title={`Add slot`} disabled={true}/>
+      )
+      
+    },
+    openForReg: (item) => {
+      if(item.onepForResistration){
+        return (
+          <ButtonApp
+            title={'Close for registration'}
+            handler={() => {
+              item.onepForResistration = false
+              setStat(Date.now())
+            }}
+        />
+        )
+      }
+      return (
+        <ButtonApp
+          title={'Open for registration'}
+          handler={() => {
+            item.onepForResistration = true
+            setStat(Date.now())
+          }}
+      />
+      )
 
-        // }
-
-      // }
-      time.slots[time.slots.length] = structuredClone(time.slots[time.slots.length - 1])
-      time.slots[time.slots.length - 1].startTime = `${timeToTwoDigits(upH)}:${timeToTwoDigits(upM)}`
-      setStat(Date.now())
     }
   }
 
-  // console.log(editedEvent)
 
-  const dayEvents = time.slots.map((item, index) => 
+  const dayEvents = editedEvent.slots.map((item, index) => 
     <Grid.Col key={index} span={12}>
       <Paper withBorder p="lg" radius="md" shadow="md">
-        <Grid>
-          <Grid.Col span={4}>
+        <Grid align="flex-end">
+          <Grid.Col span={2.4}>
           <TimeInput
+            disabled={index !== editedEvent.slots.length - 1 || editedEvent.slots.length !== 1}
             value={item.startTime}
             onChange={(event) => {
-              console.log(event.currentTarget.value)
-              item.startTime = event.currentTarget.value
+              const clock = editedEvent.slots[editedEvent.slots.length - 1].startTime.split(':')
+              // if(Number(clock[1]) < Number(event.currentTarget.value && Number(event.currentTarget.value) < 24)){
+                console.log(event.currentTarget.value)
+                item.startTime = event.currentTarget.value
+                
+              // }
               setStat(Date.now())
             }}
             size="xs"
-            radius="md"
-            label="Start event"
-            withAsterisk
+            radius="sm"
+            label="Start slot"
           />
           </Grid.Col>
-          <Grid.Col span={4}>
+          <Grid.Col span={2.4}>
             <TextInput
+              disabled={index !== editedEvent.slots.length - 1}
               onChange={(event) => {
                 console.log(event.currentTarget.value)
                 item.duration = Number(event.currentTarget.value)
                 setStat(Date.now())
                 console.log(oneEvent)
-                console.log(time)
+                console.log(editedEvent)
               }}
               value={item.duration}
               size="xs"
-              radius="md"
-              label="Event duration"
+              radius="sm"
+              label="Duration minutes"
             />
           </Grid.Col>
-          <Grid.Col span={4}>
+          <Grid.Col span={2.4}>
             <TextInput
+              disabled={index !== editedEvent.slots.length - 1}
               onChange={(event) => {
                 console.log(event.currentTarget.value)
                 item.break = Number(event.currentTarget.value)
@@ -87,10 +130,37 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
               }}
               value={item.break}
               size="xs"
-              radius="md"
-              label="Duration of break after the event"
+              radius="sm"
+              label="Break minutes"
             />
           </Grid.Col>
+          <Grid.Col span={2.4}>
+            <TextInput
+              // disabled={index !== editedEvent.slots.length - 1}
+              onChange={(event) => {
+                console.log(event.currentTarget.value)
+                item.maxClients = Number(event.currentTarget.value)
+                setStat(Date.now())
+              }}
+              value={item.maxClients}
+              size="xs"
+              radius="sm"
+              label="Max clients"
+            />
+          </Grid.Col>
+          <Grid.Col span={2.4}>
+            <ButtonApp
+              title={'Delete'}
+              disabled={index !== editedEvent.slots.length - 1 || editedEvent.slots.length === 1}
+              handler={() => {
+                editedEvent.slots.splice(-1)
+                setStat(Date.now())
+              }}
+            />
+          </Grid.Col>
+          {/* <Grid.Col span={12}>
+            {handlers.openForReg(item)}
+          </Grid.Col> */}
         </Grid>
       </Paper>
     </Grid.Col>
@@ -111,8 +181,9 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
           {dayEvents}
           <Grid.Col span={12}>
             <Grid>
-              <Grid.Col span={2}>
-                <ButtonApp title={'Add event'} handler={handlers.addSlot} />
+              <Grid.Col span={4}>
+                {handlers.getTimeNextEvent()}
+                {/* <ButtonApp title={'Add event'} handler={handlers.addSlot} /> */}
               </Grid.Col>
               <Grid.Col span={2}>
                 
@@ -124,10 +195,7 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
                 
               </Grid.Col>
               <Grid.Col span={2}>
-                
-              </Grid.Col>
-              <Grid.Col span={2}>
-                <ButtonApp title={'Save'} disabled={JSON.stringify(oneEvent) === JSON.stringify(time)}/>
+                <ButtonApp title={'Save'} disabled={JSON.stringify(oneEvent) === JSON.stringify(editedEvent)}/>
               </Grid.Col>
             </Grid>
           </Grid.Col>

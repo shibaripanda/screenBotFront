@@ -59,7 +59,8 @@ export function EventPage() {
       duration: 45, 
       break: 15, 
       clients: [], 
-      maxClients: 1
+      maxClients: 1,
+      openForRegistration: true
     }]
   }
   
