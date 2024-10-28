@@ -1,6 +1,6 @@
 export const fix = {
 
-    appLink: 'https://shibaripanda.serveo.net',
+    appLink: 'https://screenbot.loca.lt',
     serverLink: 'http://localhost:5002',
     serverAuthLink: 'ws://localhost:5002',
     botName: 'irentbot'

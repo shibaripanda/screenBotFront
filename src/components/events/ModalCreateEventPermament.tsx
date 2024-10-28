@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDisclosure } from '@mantine/hooks'
-import { Modal, Grid, Paper, TextInput } from '@mantine/core'
+import { Modal, Grid, Paper, TextInput, Slider } from '@mantine/core'
 import { ButtonApp } from '../comps/ButtonApp.tsx'
 import { TextInputApp } from '../comps/TextInputApp.tsx'
 import { TimeInput } from '@mantine/dates'
@@ -8,9 +8,10 @@ import { TimeInput } from '@mantine/dates'
 export function ModalCreateEventPermament({oneEvent, updateEvent}) {
 
   const [opened, { open, close }] = useDisclosure(false)
-  const [eventName, setEventName] = useState(oneEvent.name)
-  const [editedEvent] = useState(oneEvent)
+  // const [eventName, setEventName] = useState(oneEvent.name)
+  const [editedEvent, setEditedEvent] = useState(oneEvent)
   const [stat, setStat] = useState(0)
+  const [value, setValue] = useState<number | string>(2200)
 
 
   const handlers = {
@@ -81,22 +82,16 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
     }
   }
 
-
   const dayEvents = editedEvent.slots.map((item, index) => 
     <Grid.Col key={index} span={12}>
       <Paper withBorder p="lg" radius="md" shadow="md">
         <Grid align="flex-end">
-          <Grid.Col span={2.4}>
+          <Grid.Col span={3}>
           <TimeInput
             disabled={index !== editedEvent.slots.length - 1 || editedEvent.slots.length !== 1}
             value={item.startTime}
             onChange={(event) => {
-              const clock = editedEvent.slots[editedEvent.slots.length - 1].startTime.split(':')
-              // if(Number(clock[1]) < Number(event.currentTarget.value && Number(event.currentTarget.value) < 24)){
-                console.log(event.currentTarget.value)
-                item.startTime = event.currentTarget.value
-                
-              // }
+              item.startTime = event.currentTarget.value
               setStat(Date.now())
             }}
             size="xs"
@@ -104,7 +99,7 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
             label="Start slot"
           />
           </Grid.Col>
-          <Grid.Col span={2.4}>
+          <Grid.Col span={3}>
             <TextInput
               disabled={index !== editedEvent.slots.length - 1}
               onChange={(event) => {
@@ -120,7 +115,7 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
               label="Duration minutes"
             />
           </Grid.Col>
-          <Grid.Col span={2.4}>
+          <Grid.Col span={3}>
             <TextInput
               disabled={index !== editedEvent.slots.length - 1}
               onChange={(event) => {
@@ -133,8 +128,21 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
               radius="sm"
               label="Break minutes"
             />
+            <Slider
+              disabled={index !== editedEvent.slots.length - 1}
+              max={180}
+              step={5}
+              min={0}
+              label={null}
+              value={item.break}
+              onChange={(event) => {
+                item.break = event
+                setStat(Date.now())
+              }}
+              size={2}
+            />
           </Grid.Col>
-          <Grid.Col span={2.4}>
+          {/* <Grid.Col span={2.4}>
             <TextInput
               // disabled={index !== editedEvent.slots.length - 1}
               onChange={(event) => {
@@ -147,8 +155,8 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
               radius="sm"
               label="Max clients"
             />
-          </Grid.Col>
-          <Grid.Col span={2.4}>
+          </Grid.Col> */}
+          <Grid.Col span={3}>
             <ButtonApp
               title={'Delete'}
               disabled={index !== editedEvent.slots.length - 1 || editedEvent.slots.length === 1}
@@ -158,9 +166,6 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
               }}
             />
           </Grid.Col>
-          {/* <Grid.Col span={12}>
-            {handlers.openForReg(item)}
-          </Grid.Col> */}
         </Grid>
       </Paper>
     </Grid.Col>
@@ -172,18 +177,27 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
         onClose={() => {
             setTimeout(() => {close()}, )
             }}
-        title={oneEvent.name}
+        title={editedEvent.name}
       >
         <Grid>
           <Grid.Col span={6}>
-             <TextInputApp label='Event name' value={eventName} placeholder={eventName} handler={setEventName} />
+          <TextInput
+              onChange={(event) => {
+                console.log(event.currentTarget.value)
+                editedEvent.name = event.currentTarget.value
+                setStat(Date.now())
+              }}
+              value={editedEvent.name}
+              size="xs"
+              radius="sm"
+              label="Multi event name"
+            />
           </Grid.Col>
-          {dayEvents}
+            {dayEvents}
           <Grid.Col span={12}>
             <Grid>
               <Grid.Col span={4}>
                 {handlers.getTimeNextEvent()}
-                {/* <ButtonApp title={'Add event'} handler={handlers.addSlot} /> */}
               </Grid.Col>
               <Grid.Col span={2}>
                 
@@ -192,10 +206,21 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
                 
               </Grid.Col>
               <Grid.Col span={2}>
-                
+              <ButtonApp 
+                  title={'Cancel'} 
+                  handler={() => {
+                    setEditedEvent(oneEvent)
+                    close()
+                  }}
+                  disabled={JSON.stringify(oneEvent) === JSON.stringify(editedEvent)}
+                />
               </Grid.Col>
               <Grid.Col span={2}>
-                <ButtonApp title={'Save'} disabled={JSON.stringify(oneEvent) === JSON.stringify(editedEvent)}/>
+                <ButtonApp 
+                  title={'Save'} 
+                  handler={() => updateEvent(oneEvent, editedEvent)} 
+                  disabled={JSON.stringify(oneEvent) === JSON.stringify(editedEvent)}
+                />
               </Grid.Col>
             </Grid>
           </Grid.Col>
