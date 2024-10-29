@@ -16,7 +16,7 @@ import { pipGetSocket } from '../socket/pipGetSocket.ts'
 import { pipSendSocket } from '../socket/pipSendSocket.ts'
 
 export function EventPage() {
-
+console.log('s')
   const navigate = useNavigate()
   useConnectSocket()
   const {botId} = useParams()
@@ -43,7 +43,7 @@ export function EventPage() {
       pipSendSocket('getEvents', botId)
       setStatus(true)
     }
-  }, [botId, events])
+  }, [])
 
   const eventFilter = useMemo(() => {
       return events.filter(item => item.name.toLowerCase().includes(filterEvents.toLowerCase()))
@@ -67,7 +67,6 @@ export function EventPage() {
   const func = {
     createEvent: async () => pipSendSocket('createEvent', {botId: bot._id, event: newEventModule}),
     deleteEvent: async (event) => pipSendSocket('deleteEvent', {botId: bot._id, event: event}),
-    // updateEventSlot: async (event, newEvent) => pipSendSocket('updateEventSlot', {botId: bot._id, event: event, newEvent: newEvent}),
     updateEvent: async (event, newEvent) => pipSendSocket('updateEvent', {botId: bot._id, event: event, newEvent: newEvent})
   }
 

@@ -1,11 +1,12 @@
 import { Paper, Text, Group, Grid } from '@mantine/core';
-import React, { useState } from 'react'
+import React from 'react'
 import { ButtonApp } from '../comps/ButtonApp.tsx';
 import { ModalCreateEventPermament } from './ModalCreateEventPermament.tsx';
 
 export function EventItem({oneEvent, deleteEvent, updateEvent}) {
-
+console.log('d')
   // const [editedEvent, setEditedEvent] = useState(structuredClone(oneEvent))
+  // const [editedEvent, setEditedEvent] = useState(oneEvent)
 
   const buttonsSection = [
     <ModalCreateEventPermament oneEvent={oneEvent} updateEvent={updateEvent} />,

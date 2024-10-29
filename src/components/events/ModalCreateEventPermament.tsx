@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { useDisclosure } from '@mantine/hooks'
 import { Modal, Grid, Paper, TextInput, Slider } from '@mantine/core'
 import { ButtonApp } from '../comps/ButtonApp.tsx'
-import { TextInputApp } from '../comps/TextInputApp.tsx'
 import { TimeInput } from '@mantine/dates'
 
 export function ModalCreateEventPermament({oneEvent, updateEvent}) {
@@ -11,7 +10,7 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
   // const [eventName, setEventName] = useState(oneEvent.name)
   const [editedEvent, setEditedEvent] = useState(oneEvent)
   const [stat, setStat] = useState(0)
-  const [value, setValue] = useState<number | string>(2200)
+  // const [value, setValue] = useState<number | string>(2200)
 
 
   const handlers = {
@@ -82,6 +81,7 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
     }
   }
 
+  console.log(editedEvent.slots)
   const dayEvents = editedEvent.slots.map((item, index) => 
     <Grid.Col key={index} span={12}>
       <Paper withBorder p="lg" radius="md" shadow="md">
@@ -103,11 +103,8 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
             <TextInput
               disabled={index !== editedEvent.slots.length - 1}
               onChange={(event) => {
-                console.log(event.currentTarget.value)
                 item.duration = Number(event.currentTarget.value)
                 setStat(Date.now())
-                console.log(oneEvent)
-                console.log(editedEvent)
               }}
               value={item.duration}
               size="xs"
@@ -119,7 +116,6 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
             <TextInput
               disabled={index !== editedEvent.slots.length - 1}
               onChange={(event) => {
-                console.log(event.currentTarget.value)
                 item.break = Number(event.currentTarget.value)
                 setStat(Date.now())
               }}
@@ -142,20 +138,6 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
               size={2}
             />
           </Grid.Col>
-          {/* <Grid.Col span={2.4}>
-            <TextInput
-              // disabled={index !== editedEvent.slots.length - 1}
-              onChange={(event) => {
-                console.log(event.currentTarget.value)
-                item.maxClients = Number(event.currentTarget.value)
-                setStat(Date.now())
-              }}
-              value={item.maxClients}
-              size="xs"
-              radius="sm"
-              label="Max clients"
-            />
-          </Grid.Col> */}
           <Grid.Col span={3}>
             <ButtonApp
               title={'Delete'}
@@ -174,16 +156,13 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
   return (
     <>
       <Modal size={'65vmax'} opened={opened} 
-        onClose={() => {
-            setTimeout(() => {close()}, )
-            }}
+        onClose={close}
         title={editedEvent.name}
       >
         <Grid>
           <Grid.Col span={6}>
           <TextInput
               onChange={(event) => {
-                console.log(event.currentTarget.value)
                 editedEvent.name = event.currentTarget.value
                 setStat(Date.now())
               }}
@@ -228,7 +207,7 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
      
 
       </Modal>
-      <ButtonApp title='Edit' handler={open}  disabled={false}/>
+      <ButtonApp title='Edit' handler={open} />
     </>
   )
 }

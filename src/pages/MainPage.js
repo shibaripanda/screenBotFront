@@ -10,7 +10,7 @@ import { pipSendSocket } from '../socket/pipSendSocket.ts'
 import { pipGetSocket } from '../socket/pipGetSocket.ts'
 
 export function MainPage() {
-
+  console.log('main')
   useConnectSocket()
 
   const [status, setStatus] = useState(false)
