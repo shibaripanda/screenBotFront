@@ -4,14 +4,11 @@ import { Modal, Grid, Paper, TextInput, Slider } from '@mantine/core'
 import { ButtonApp } from '../comps/ButtonApp.tsx'
 import { TimeInput } from '@mantine/dates'
 
-export function ModalCreateEventPermament({oneEvent, updateEvent}) {
+export function ModalCreateEvent({oneEvent, updateEvent}) {
 
   const [opened, { open, close }] = useDisclosure(false)
-  // const [eventName, setEventName] = useState(oneEvent.name)
-  const [editedEvent, setEditedEvent] = useState(oneEvent)
+  const [editedEvent, setEditedEvent] = useState(structuredClone(oneEvent))
   const [stat, setStat] = useState(0)
-  // const [value, setValue] = useState<number | string>(2200)
-
 
   const handlers = {
     addSlot: () => {
@@ -81,7 +78,6 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
     }
   }
 
-  console.log(editedEvent.slots)
   const dayEvents = editedEvent.slots.map((item, index) => 
     <Grid.Col key={index} span={12}>
       <Paper withBorder p="lg" radius="md" shadow="md">
@@ -133,6 +129,7 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
               value={item.break}
               onChange={(event) => {
                 item.break = event
+                console.log(JSON.stringify(oneEvent) === JSON.stringify(editedEvent))
                 setStat(Date.now())
               }}
               size={2}
@@ -188,7 +185,7 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
               <ButtonApp 
                   title={'Cancel'} 
                   handler={() => {
-                    setEditedEvent(oneEvent)
+                    setEditedEvent(structuredClone(oneEvent))
                     close()
                   }}
                   disabled={JSON.stringify(oneEvent) === JSON.stringify(editedEvent)}
@@ -207,7 +204,7 @@ export function ModalCreateEventPermament({oneEvent, updateEvent}) {
      
 
       </Modal>
-      <ButtonApp title='Edit' handler={open} />
+      <ButtonApp title='Edit' handler={open} disabled={oneEvent.publish}/>
     </>
   )
 }

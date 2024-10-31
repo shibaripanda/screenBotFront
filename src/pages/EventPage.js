@@ -7,8 +7,6 @@ import { fix } from '../fix/fix.js'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Center, Grid } from '@mantine/core'
 import { EventItem } from '../components/events/EventItem.tsx'
-// import { ModalCreateEventOneTime } from '../components/events/ModalCreateEventOneTime.tsx'
-// import { ModalCreateEventPermament } from '../components/events/ModalCreateEventPermament.tsx'
 import { ButtonApp } from '../components/comps/ButtonApp.tsx'
 import { TextApp } from '../components/comps/TextApp.tsx'
 import { TextInputApp } from '../components/comps/TextInputApp.tsx'
@@ -24,7 +22,6 @@ console.log('s')
 
   const [bot, setBot] = useState(false)
   const [events, setEvents] = useState([])
-  // const [newEventName, setNewEventName] = useState('')
   const [filterEvents, setFilterEvents] = useState('')
   const [status, setStatus] = useState(false)
   const [eventName, setEventName] = useState('')
@@ -52,7 +49,8 @@ console.log('s')
 
   const newEventModule = {
     idEvent: Date.now() + 'Event',
-    name: eventName, 
+    name: eventName,
+    publish: false,
     slots:[{
       idSlot: Date.now() + 'Slot', 
       startTime: '09:00', 
@@ -65,7 +63,7 @@ console.log('s')
   }
   
   const func = {
-    createEvent: async () => pipSendSocket('createEvent', {botId: bot._id, event: newEventModule}),
+    createEvent: async (newEvent) => pipSendSocket('createEvent', {botId: bot._id, event: newEvent}),
     deleteEvent: async (event) => pipSendSocket('deleteEvent', {botId: bot._id, event: event}),
     updateEvent: async (event, newEvent) => pipSendSocket('updateEvent', {botId: bot._id, event: event, newEvent: newEvent})
   }
@@ -103,23 +101,21 @@ console.log('s')
           </Grid.Col>
           <Grid.Col span={2}>
             <ButtonApp 
-            title='Create a new multi-event' 
+            title='Create a new event' 
             handler={() => {
-              func.createEvent()
+              func.createEvent(newEventModule)
               setEventName('')
             }} 
             disabled={!eventName}/>
-          </Grid.Col>
-          <Grid.Col span={2}>
-            <ButtonApp title='Create a new one-time-event' handler={() => {func.createEvent({name: eventName}); setEventName('')}} disabled={!eventName}/>
           </Grid.Col>
         </Grid>
 
         <Grid>
           {eventFilter.map((item, index) => <Grid.Col key={index} span={4}>
             <EventItem
-              updateEvent={func.updateEvent}
               oneEvent={item} 
+              createEvent={func.createEvent}
+              updateEvent={func.updateEvent}
               deleteEvent={func.deleteEvent}
             />
             </Grid.Col>)}
